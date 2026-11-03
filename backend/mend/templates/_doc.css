@@ -1,0 +1,30 @@
+@page { size: A4; margin: 16mm 14mm; }
+* { box-sizing: border-box; }
+body { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: #0f172a; font-size: 10.5pt; line-height: 1.45; margin: 0; background: #fff; }
+.doc { max-width: 900px; margin: 0 auto; padding: 24px; }
+header.top { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0f172a; padding-bottom: 10px; margin-bottom: 14px; }
+.brand { font-weight: 800; letter-spacing: .18em; font-size: 11pt; }
+.brand span { color: #e11d48; }
+h1 { font-size: 19pt; margin: 4px 0 2px; }
+h2 { font-size: 13pt; margin: 20px 0 6px; border-bottom: 1px solid #cbd5e1; padding-bottom: 3px; }
+h3 { font-size: 11pt; margin: 14px 0 4px; }
+.muted { color: #64748b; }
+.small { font-size: 8.5pt; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.5pt; }
+th { background: #0f172a; color: #fff; text-align: left; padding: 5px 6px; font-weight: 600; }
+td { border-bottom: 1px solid #e2e8f0; padding: 5px 6px; vertical-align: top; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.total td { font-weight: 700; border-top: 2px solid #0f172a; }
+.kv { display: grid; grid-template-columns: 150px 1fr; gap: 2px 10px; margin: 6px 0; }
+.kv div:nth-child(odd) { color: #64748b; }
+.sev { display: inline-block; min-width: 22px; text-align: center; border-radius: 4px; color: #fff; font-weight: 700; padding: 0 5px; }
+.sev1 { background: #0ea5e9; } .sev2 { background: #14b8a6; } .sev3 { background: #ca8a04; } .sev4 { background: #ea580c; } .sev5 { background: #e11d48; }
+.evidence { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.evidence figure { margin: 0; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; break-inside: avoid; }
+.evidence img { width: 100%; display: block; }
+.evidence figcaption { font-size: 8.5pt; padding: 5px 7px; background: #f8fafc; }
+.note { background: #fff7ed; border-left: 3px solid #ea580c; padding: 6px 10px; font-size: 9pt; margin: 8px 0; }
+.callout { background: #f1f5f9; border-left: 3px solid #0f172a; padding: 8px 12px; margin: 8px 0; }
+.voice { background: #ecfeff; border-left: 3px solid #0891b2; padding: 8px 12px; margin: 8px 0; }
+.page-break { break-before: page; }
+a { color: #0f172a; }

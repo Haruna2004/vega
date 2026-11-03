@@ -1,0 +1,49 @@
+# Request for Quotation — Road defect repairs
+
+{{ authority }} · Survey: {{ run.name }} · generated {{ generated }}
+
+{{ sites|length }} sites · {{ boq.lines|length }} repair items · estimated total **{{ boq.total|money(sym) }}** ({{ boq.currency }}, incl. {{ boq.contingency_pct }}% contingency)
+
+## 1. Executive summary
+
+{{ sections.executive_summary }}
+
+## 2. Scope of works
+
+{{ sections.scope_of_works }}
+
+### Sites in priority order
+
+| Rank | Site | Location | Defects | Priority | Site total |
+|---|---|---|---|---:|---:|
+{% for s in sites %}{% if boq.sites[s.id] and boq.sites[s.id].lines %}| #{{ s.rank }} | {{ s.id }} | {{ s.street or "—" }} ({{ "%.5f"|format(s.lat) }}, {{ "%.5f"|format(s.lon) }}) | {% for did in s.defect_ids %}{{ did }} (sev {{ defects[did].severity }}){% if not loop.last %}, {% endif %}{% endfor %} | {{ s.priority_score }} | {{ boq.sites[s.id].total|money(sym) }} |
+{% endif %}{% endfor %}
+## 3. Bill of quantities ({{ boq.currency }})
+
+| Item | Unit | Qty | Rate | Amount | Defects |
+|---|---|---:|---:|---:|---|
+{% for b in boq.by_treatment %}| {{ b.description }} | {{ b.unit }} | {{ "%.2f"|format(b.qty) }} | {{ b.rate|money(sym) }} | {{ b.amount|money(sym) }} | {{ b.defects|join(", ") }} |
+{% endfor %}| Subtotal (incl. mobilisation) | | | | {{ boq.subtotal|money(sym) }} | |
+| Contingency ({{ boq.contingency_pct }}%) | | | | {{ boq.contingency|money(sym) }} | |
+| **Total estimate** | | | | **{{ boq.total|money(sym) }}** | |
+
+_Unit rates are placeholders (config/unit_rates.yaml), not market prices._
+
+## 4. Technical specifications
+
+{{ sections.technical_specifications }}
+
+## 5. Programme
+
+{{ sections.programme }}
+
+## 6. Safety and traffic management
+
+{{ sections.safety_and_traffic_management }}
+
+## Appendix A — Evidence
+
+{{ sections.evidence_note }}
+{% for s in sites %}{% for did in s.defect_ids %}{% set d = defects[did] %}{% if d.evidence_frame %}
+- **{{ d.id }}** ({{ s.id }}) {{ d.label }}, severity {{ d.severity }}: ![{{ d.id }}](../{{ d.evidence_frame }})
+{% endif %}{% endfor %}{% endfor %}

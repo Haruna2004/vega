@@ -1,0 +1,33 @@
+{% set s = site %}{% set sb = site_boq %}# Work order {{ s.id }} — Rank #{{ s.rank }}{% if s.street %} · {{ s.street }}{% endif %}
+
+Survey: {{ run.name }} · {{ authority }} · generated {{ generated }}
+
+- Priority score: **{{ s.priority_score }}** / 100 (severity score {{ s.severity_score }} × exposure {{ s.exposure }})
+- Location: {{ "%.6f"|format(s.lat) }}, {{ "%.6f"|format(s.lon) }} — https://www.openstreetmap.org/?mlat={{ s.lat }}&mlon={{ s.lon }}#map=19/{{ s.lat }}/{{ s.lon }}
+- Road class: {{ s.road_class or "unknown" }}
+- Nearby (≤150 m): {% for p in s.pois[:5] %}{{ p.name }} ({{ p.kind|replace("_"," ") }}, {{ p.distance_m }} m){% if not loop.last %}; {% endif %}{% else %}none recorded{% endfor %}
+{% if s.rationale %}
+> **Why this rank.** {{ s.rationale }}
+{% endif %}{% if s.voice %}
+> **Field note** ({{ s.voice.model }}): “{{ s.voice.transcript }}”
+{% endif %}
+## Defects
+
+| ID | Type | Severity | Size | Position | Method |
+|---|---|---|---|---|---|
+{% for did in s.defect_ids %}{% set d = defects[did] %}| {{ d.id }} | {{ d.label }} | {{ d.severity }} | {% if d.area_m2 is not none and d.quantity_key != "length_m" %}{{ "%.2f"|format(d.area_m2) }} m² ({{ "%.2f"|format(d.conf_low) }}–{{ "%.2f"|format(d.conf_high) }}){% elif d.length_m %}{{ "%.1f"|format(d.length_m) }} m{% else %}{{ d.size_bucket }} (relative){% endif %} | {{ d.position|replace("_"," ") }} | {{ d.method }} |
+{% endfor %}
+## Bill of quantities ({{ boq.currency }})
+
+| Item | Defect | Qty | Unit | Rate | Amount |
+|---|---|---:|---|---:|---:|
+{% for ln in sb.lines %}| {{ ln.description }} — {{ ln.basis }} | {{ ln.defect_id }} | {{ "%.2f"|format(ln.qty) }} | {{ ln.unit }} | {{ ln.rate|money(sym) }} | {{ ln.amount|money(sym) }} |
+{% endfor %}| Mobilisation and traffic management | | | | | {{ sb.mobilisation|money(sym) }} |
+| **Site total** | | | | | **{{ sb.total|money(sym) }}** |
+
+_Unit rates are placeholders (config/unit_rates.yaml)._
+
+## Evidence
+{% for did in s.defect_ids %}{% set d = defects[did] %}{% if d.evidence_frame %}
+- **{{ d.id }}** {{ d.label }}, frame {{ d.best_frame }}: ![{{ d.id }}](../{{ d.evidence_frame }}) ![{{ d.id }} crop](../{{ d.evidence }})
+{% endif %}{% endfor %}

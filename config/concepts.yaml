@@ -1,0 +1,149 @@
+# Defect concept vocabulary.
+# - sam_prompt: the short noun phrase sent to SAM 3.1 (SAM wants noun phrases, not commands).
+# - alt_prompts: re-prompts used for low-recall cases (faint cracks etc.).
+# - specificity: when two tracks overlap (IoU > 0.6) the higher value wins the label.
+# - treatment: key in unit_rates.yaml. quantity: area | length | count.
+# - baseline: run this prompt on every chunk even if triage did not flag it.
+concepts:
+  pothole:
+    label: Pothole
+    sam_prompt: pothole
+    alt_prompts: [pothole in asphalt road]
+    color: "#FF3B5C"
+    specificity: 9
+    base_severity: 3
+    treatment: pothole_patch
+    quantity: area
+    baseline: true
+  alligator_crack:
+    label: Alligator crack
+    sam_prompt: alligator cracking
+    alt_prompts: [cracked asphalt patch]
+    color: "#FF8A00"
+    specificity: 8
+    base_severity: 3
+    treatment: full_depth_repair
+    quantity: area
+  longitudinal_crack:
+    label: Longitudinal crack
+    sam_prompt: long crack along the road
+    alt_prompts: [thin crack in asphalt]
+    color: "#FFD60A"
+    specificity: 7
+    base_severity: 2
+    treatment: crack_seal
+    quantity: length
+  transverse_crack:
+    label: Transverse crack
+    sam_prompt: crack across the road
+    alt_prompts: [thin crack in asphalt]
+    color: "#FFE97A"
+    specificity: 7
+    base_severity: 2
+    treatment: crack_seal
+    quantity: length
+  crack:
+    label: Crack
+    sam_prompt: road crack
+    alt_prompts: [thin crack in asphalt]
+    color: "#FFB020"
+    specificity: 3
+    base_severity: 2
+    treatment: crack_seal
+    quantity: length
+    baseline: true
+  rutting:
+    label: Rutting
+    sam_prompt: wheel rut
+    color: "#B57CFF"
+    specificity: 6
+    base_severity: 3
+    treatment: mill_and_overlay
+    quantity: area
+  edge_break:
+    label: Edge break
+    sam_prompt: broken road edge
+    color: "#FF6B3D"
+    specificity: 6
+    base_severity: 3
+    treatment: edge_repair
+    quantity: length
+  missing_manhole_cover:
+    label: Missing manhole cover
+    sam_prompt: open manhole
+    color: "#FF2E97"
+    specificity: 9
+    base_severity: 5
+    treatment: manhole_cover_replace
+    quantity: count
+  open_drain:
+    label: Open drain
+    sam_prompt: open drainage gutter
+    color: "#00E5FF"
+    specificity: 6
+    base_severity: 3
+    treatment: drain_clearing
+    quantity: count
+  debris:
+    label: Debris
+    sam_prompt: debris on road
+    color: "#A3E635"
+    specificity: 4
+    base_severity: 2
+    treatment: debris_removal
+    quantity: count
+  standing_water:
+    label: Standing water
+    sam_prompt: puddle
+    alt_prompts: [standing water on road]
+    color: "#3DA5FF"
+    specificity: 5
+    base_severity: 2
+    treatment: drainage_inspection
+    quantity: count
+    baseline: true
+  faded_lane_marking:
+    label: Faded lane marking
+    sam_prompt: faded lane marking
+    color: "#CBD5E1"
+    specificity: 4
+    base_severity: 1
+    treatment: lane_remarking
+    quantity: length
+  damaged_sign:
+    label: Damaged sign
+    sam_prompt: damaged traffic sign
+    color: "#34D399"
+    specificity: 6
+    base_severity: 2
+    treatment: sign_repair
+    quantity: count
+  broken_speed_bump:
+    label: Broken speed bump
+    sam_prompt: broken speed bump
+    color: "#F472B6"
+    specificity: 7
+    base_severity: 3
+    treatment: speed_bump_repair
+    quantity: count
+  construction_hazard:
+    label: Construction hazard
+    sam_prompt: construction barrier
+    color: "#FB923C"
+    specificity: 5
+    base_severity: 3
+    treatment: hazard_barricade
+    quantity: count
+
+# Reference prompts (not defects) used for calibration and filtering.
+reference:
+  road: road
+  lane_marking: lane marking
+
+# Severity colours, cold -> hot.
+severity_colors:
+  1: "#38BDF8"
+  2: "#2DD4BF"
+  3: "#FACC15"
+  4: "#FB923C"
+  5: "#F43F5E"

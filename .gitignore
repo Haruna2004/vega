@@ -1,0 +1,21 @@
+# env / secrets
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# data (demo run is shipped separately, see README)
+data/raw/*
+!data/raw/.gitkeep
+data/cache/*
+!data/cache/.gitkeep
+data/runs/*
+!data/runs/.gitkeep
+data/uploads/
+# frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+*.log
+.DS_Store
