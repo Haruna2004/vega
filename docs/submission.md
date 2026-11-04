@@ -1,6 +1,6 @@
 # Submission form draft
 
-**Team name:** MEND (change if you registered another name)
+**Team name:** Vega (project: MEND)
 
 **Track:** Indie
 
@@ -10,7 +10,7 @@
 
 MEND turns a single drive down a road into a repair plan a council can act on. You film the road with a phone or a dashcam and upload the video, or use the Capture page on a phone, which logs GPS while you film. A few minutes later you get every pothole outlined and tracked through the video, a size for each one in square metres with an honest range, the damage mapped and grouped into repair sites, those sites ranked by risk to the people who use the road, and work orders, a bill of quantities and a tender document ready to print and sign.
 
-[Add a sentence or two in your own words about why this problem matters to you.] Road repair often starts with someone walking the road with a tape measure. It is hard to know how big the holes are, which ones are dangerous or what fixing them will cost. I wanted something a small works department could run with the phone in their pocket.
+Potholes are one of the most visible failures of local government, and one of the least measured. A crew can see that a road is bad, but turning that into numbers a budget office will approve takes weeks of paperwork, so repairs tend to follow complaints instead of risk. Road repair often starts with someone walking the road with a tape measure. It is hard to know how big the holes are, which ones are dangerous or what fixing them will cost. I wanted something a small works department could run with the phone in their pocket.
 
 Under the hood, Muse Spark looks at sampled frames and plans the scan. SAM 3.1 segments and tracks each defect across the video. A pinhole camera model projects every mask onto the road plane to get real-world area, with the horizon found from SAM's road mask and checked against Muse Spark's own estimate. Muse Spark then reviews the close-up crop of each detection and throws out shadows and puddles. Sites are ranked by severity times exposure, using road class and nearby schools, clinics and bus stops from OpenStreetMap. Inspectors can add a spoken note on site, which Muse Voice Transcribe turns into text and Muse Spark uses to adjust the ranking. Every line in the work orders is tied back to a defect image, and you can ask questions about the survey in plain language and get answers that cite the exact sites and defects.
 
