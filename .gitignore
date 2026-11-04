@@ -19,3 +19,5 @@ frontend/out/
 frontend/next-env.d.ts
 *.log
 .DS_Store
+api/node_modules/
+api/.wrangler/

@@ -65,7 +65,10 @@ class Run:
     def load(cls, run_id: str) -> "Run":
         run = cls(run_id)
         if not (run.dir / "run.json").exists():
-            raise FileNotFoundError(run_id)
+            from . import r2sync
+
+            if not r2sync.hydrate_run(run_id, run.root) or not (run.dir / "run.json").exists():
+                raise FileNotFoundError(run_id)
         return run
 
     @classmethod
@@ -120,7 +123,11 @@ class Run:
             meta = self.meta
             meta.update(changes)
             self.write("run", meta)
-            return meta
+        if changes.get("status") in ("done", "failed", "running"):
+            from . import r2sync
+
+            r2sync.sync_run(self)
+        return meta
 
     def set_stage(self, stage: str, status: str, **info: Any) -> None:
         with _lock_for(self.id):
@@ -136,6 +143,10 @@ class Run:
             st.update(info)
             self.write("run", meta)
         self.emit("stage", stage=stage, status=status, **info)
+        if status in ("done", "failed"):
+            from . import r2sync
+
+            r2sync.sync_run(self)
 
     # ------------------------------------------------------------ events
     def emit(self, type_: str, **data: Any) -> None:

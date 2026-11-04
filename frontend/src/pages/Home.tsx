@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Smartphone, Upload } from "lucide-react";
 import { Logo, SimBadge } from "../components/ui";
-import { fmtMoney, get, send } from "../lib/api";
+import { fmtMoney, get } from "../lib/api";
+import { startRun } from "../lib/upload";
 
 export default function Home() {
   const nav = useNavigate();
@@ -18,17 +19,15 @@ export default function Home() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [drag, setDrag] = useState(false);
+  const [prog, setProg] = useState(0);
   useEffect(() => { get("/api/runs").then(setRuns).catch(() => {}); get("/api/health").then(setHealth).catch(() => {}); get("/api/config").then(setCfg).catch(() => {}); }, []);
 
   async function start() {
     setBusy(true); setErr("");
-    const f = new FormData();
-    files.forEach((x) => f.append("files", x));
-    f.append("name", name || files[0]?.name.replace(/\.[^.]+$/, "") || "Road survey");
-    f.append("calibration", JSON.stringify({ preset, ...(height ? { height_m: +height } : {}) }));
-    f.append("currency", currency);
-    if (maxSec) f.append("max_seconds", maxSec);
-    try { const r = await send("/api/runs", "POST", f); nav(`/runs/${r.id}/review`); }
+    try {
+      const id = await startRun(files.map((x) => ({ blob: x, name: x.name })), { name: name || files[0]?.name.replace(/\.[^.]+$/, "") || "Road survey", calibration: { preset, ...(height ? { height_m: +height } : {}) }, currency, max_seconds: maxSec ? +maxSec : null }, setProg);
+      nav(`/runs/${id}/review`);
+    }
     catch (e: any) { setErr(e.message); setBusy(false); }
   }
 
@@ -79,7 +78,7 @@ export default function Home() {
               <label><div className="label mb-1">Max seconds</div><input className="w-full num" value={maxSec} onChange={(e) => setMaxSec(e.target.value)} /></label>
             </div>
             {err && <div className="text-sev5 text-[12px]">{err}</div>}
-            <button className="btn btn-solid w-full py-2.5" disabled={!files.length || busy} onClick={start}>{busy ? "Uploading…" : "Start survey"}</button>
+            <button className="btn btn-solid w-full py-2.5" disabled={!files.length || busy} onClick={start}>{busy ? `Uploading… ${Math.round(prog * 100)}%` : "Start survey"}</button>
             <div className="text-[11px] text-muted">No GPS in the footage? You can draw the route on the map afterwards.</div>
           </div>
         </section>

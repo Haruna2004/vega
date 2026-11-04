@@ -122,7 +122,13 @@ class DiskCache:
                 return json.loads(p.read_text())
             except json.JSONDecodeError:
                 log.warning("corrupt cache entry %s", p)
-        return None
+        from . import r2sync
+
+        remote = r2sync.cache_get(kind, f"{key[:2]}/{key}.json")
+        if remote is not None:
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(json.dumps(remote))
+        return remote
 
     def put(self, kind: str, key: str, value: dict) -> None:
         p = self.path(kind, key)
@@ -130,6 +136,9 @@ class DiskCache:
         tmp = p.with_suffix(f".{os.getpid()}.{threading.get_ident()}.tmp")
         tmp.write_text(json.dumps(value, ensure_ascii=False))
         tmp.replace(p)
+        from . import r2sync
+
+        r2sync.cache_put(kind, f"{key[:2]}/{key}.json", value)
 
 
 @dataclass

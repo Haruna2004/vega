@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import asyncio
 import csv
+import os
+import uuid
 import io
 import json
 import shutil
@@ -25,6 +27,28 @@ from .store import STAGES, Run
 
 app = FastAPI(title="MEND API", version="0.1.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+ENGINE_KEY = os.environ.get("MEND_ENGINE_KEY", "")
+UPLOAD_LIMIT_FREE = {"/api/health"}
+
+
+@app.middleware("http")
+async def engine_auth(request: Request, call_next):
+    """On Cloud Run only the edge Worker (holding MEND_ENGINE_KEY) may call the engine."""
+    if ENGINE_KEY and request.url.path.startswith("/api/") and request.url.path not in UPLOAD_LIMIT_FREE and request.headers.get("x-mend-key") != ENGINE_KEY:
+        return JSONResponse({"detail": "forbidden"}, status_code=403)
+    return await call_next(request)
+
+
+@app.on_event("startup")
+def _startup() -> None:
+    from . import r2sync
+
+    if r2sync.enabled():
+        try:
+            r2sync.put_json("config.json", config())
+        except Exception:
+            pass
 
 PUBLIC_JSON = {"run", "media", "frames", "triage", "defects", "sites", "boq", "documents", "calibration", "route", "summary", "annotated", "voice_notes", "tender_sections", "unit_rates"}
 
@@ -91,6 +115,64 @@ async def create_run_from_path(payload: dict) -> dict:
         raise HTTPException(400, f"missing files: {missing}")
     run = Run.create(payload.get("name") or "Road survey", calibration=payload.get("calibration") or {}, currency=payload.get("currency", "USD"), country=payload.get("country", ""), settings={"authority": payload.get("authority"), "max_seconds": payload.get("max_seconds")}, run_id=payload.get("run_id"))
     runner.start_background(run, paths, drawn_route=payload.get("route"), start_s=payload.get("start_s"), max_seconds=payload.get("max_seconds"))
+    return {"id": run.id}
+
+
+# ---- uploads (same protocol as the edge Worker's R2 multipart, for local dev) ----
+def _upload_dir() -> Path:
+    d = get_settings().uploads_dir
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+@app.post("/api/uploads/{key:path}")
+async def upload_create_or_complete(key: str, request: Request, action: str = "") -> dict:
+    d = _upload_dir() / key
+    if action == "create":
+        d.parent.mkdir(parents=True, exist_ok=True)
+        uid = uuid.uuid4().hex
+        (d.parent / f".{d.name}.{uid}").mkdir(exist_ok=True)
+        return {"uploadId": uid, "key": f"uploads/{key}"}
+    if action == "complete":
+        body = await request.json()
+        parts_dir = d.parent / f".{d.name}.{body['uploadId']}"
+        with open(d, "wb") as out:
+            for p in sorted(body["parts"], key=lambda p: p["partNumber"]):
+                out.write((parts_dir / str(p["partNumber"])).read_bytes())
+        shutil.rmtree(parts_dir, ignore_errors=True)
+        return {"key": f"uploads/{key}", "size": d.stat().st_size}
+    raise HTTPException(400, "bad upload request")
+
+
+@app.put("/api/uploads/{key:path}")
+async def upload_part(key: str, request: Request, uploadId: str, part: int) -> dict:
+    d = _upload_dir() / key
+    (d.parent / f".{d.name}.{uploadId}" / str(part)).write_bytes(await request.body())
+    return {"partNumber": part, "etag": f"local-{part}"}
+
+
+@app.post("/api/runs/from-uploads")
+async def create_run_from_uploads(payload: dict) -> dict:
+    """Start a run from files already uploaded (local data/uploads or R2 uploads/)."""
+    from . import r2sync
+
+    run = Run.create(payload.get("name") or "Road survey", calibration=payload.get("calibration") or {}, currency=payload.get("currency", "USD"), country=payload.get("country", ""), settings={"authority": payload.get("authority"), "max_seconds": payload.get("max_seconds")})
+    saved = []
+    for key in payload["keys"]:
+        rel = key[len("uploads/"):] if key.startswith("uploads/") else key
+        src = _upload_dir() / rel
+        dst = run.dir / "inputs" / Path(rel).name
+        if src.exists():
+            shutil.copy2(src, dst)
+        elif r2sync.enabled():
+            data = await asyncio.to_thread(r2sync.get_bytes, key)
+            if data is None:
+                raise HTTPException(400, f"upload {key} not found")
+            dst.write_bytes(data)
+        else:
+            raise HTTPException(400, f"upload {key} not found")
+        saved.append(dst)
+    runner.start_background(run, saved, drawn_route=payload.get("route"), max_seconds=payload.get("max_seconds"))
     return {"id": run.id}
 
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Camera, Circle, Square } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../components/ui";
-import { send } from "../lib/api";
+import { startRun } from "../lib/upload";
 
 type Fix = { t: number; lat: number; lon: number; acc: number };
 
@@ -68,16 +68,14 @@ export default function Capture() {
   }
   async function upload() {
     setBusy(true); setErr("");
-    const f = new FormData();
+    const files: { blob: Blob; name: string }[] = [];
     if (clip) {
-      f.append("files", clip, clip.type.includes("mp4") ? "capture.mp4" : "capture.webm");
-      if (fixes.length > 1) f.append("files", new Blob(["t,lat,lon\n" + fixes.map((x) => `${x.t.toFixed(1)},${x.lat},${x.lon}`).join("\n")], { type: "text/csv" }), "capture_route.csv");
+      files.push({ blob: clip, name: clip.type.includes("mp4") ? "capture.mp4" : "capture.webm" });
+      if (fixes.length > 1) files.push({ blob: new Blob(["t,lat,lon\n" + fixes.map((x) => `${x.t.toFixed(1)},${x.lat},${x.lon}`).join("\n")], { type: "text/csv" }), name: "capture_route.csv" });
     }
-    photos.forEach((p, i) => f.append("files", p.blob, `photo_${String(i).padStart(3, "0")}.jpg`));
-    if (!clip && photos.some((p) => p.fix)) f.append("route", JSON.stringify(photos.map((p) => ({ lat: p.fix?.lat ?? 0, lon: p.fix?.lon ?? 0 }))));
-    f.append("name", `Phone capture ${new Date().toLocaleString()}`);
-    f.append("calibration", JSON.stringify({ preset: "phone_dashboard" }));
-    try { const r = await send("/api/runs", "POST", f); nav(`/runs/${r.id}/review`); }
+    photos.forEach((p, i) => files.push({ blob: p.blob, name: `photo_${String(i).padStart(3, "0")}.jpg` }));
+    const route = !clip && photos.some((p) => p.fix) ? photos.map((p) => ({ lat: p.fix?.lat ?? 0, lon: p.fix?.lon ?? 0 })) : null;
+    try { const id = await startRun(files, { name: `Phone capture ${new Date().toLocaleString()}`, calibration: { preset: "phone_dashboard" }, route }); nav(`/runs/${id}/review`); }
     catch (e: any) { setErr(e.message); setBusy(false); }
   }
 
