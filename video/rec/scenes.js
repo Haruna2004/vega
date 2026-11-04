@@ -2,7 +2,7 @@
 const { open, BASE, RUN } = require('./lib');
 const path = require('path');
 const R = `${BASE}/app/runs/${RUN}`;
-const go = async (h, url) => { await h.page.goto(url, { waitUntil: 'networkidle' }).catch(() => {}); await h.wait(1500); };
+const go = async (h, url) => { await h.page.goto(url, { waitUntil: "load" }).catch(() => {}); await h.wait(1500); };
 
 const S = {
   // landing, then the survey list, then open bolonge
@@ -28,10 +28,10 @@ const S = {
     await go(h, `${R}/review`);
     await h.wait(2500);
     h.mark('start');
-    await h.page.locator('select').first().selectOption({ label: '4×' }).catch(() => {});
+    await h.page.locator('select').first().selectOption('8').catch(() => {});
     await h.click('text=Replay processing', 1000);
     h.mark('replay');
-    await h.wait(30000);
+    await h.wait(56000);
     await h.done();
   },
   // click a clear pothole, read the inspector
@@ -41,16 +41,16 @@ const S = {
     await h.wait(2500);
     h.mark('start');
     const id = process.env.DEFECT || 'D005';
-    const row = h.page.locator(`button:has-text("${id}")`).first();
+    const row = h.page.locator(`button:visible:has-text("${id}")`).first();
     await h.click(row, 1200);
     h.mark('open');
     await h.wait(2500);
     await h.move(1730, 520, 900); await h.wait(2500);
     await h.move(1730, 700, 900); await h.wait(3000);
     await h.move(1730, 860, 900); await h.wait(4000);
-    const raw = h.page.locator('button:has-text("Raw pixels")').first();
+    const raw = h.page.locator('button:visible:has-text("Raw pixels")').first();
     await h.click(raw, 800); await h.wait(2200);
-    await h.click(h.page.locator('button:has-text("SAM mask")').first(), 600); await h.wait(4000);
+    await h.click(h.page.locator('button:visible:has-text("SAM mask")').first(), 600); await h.wait(4000);
     await h.done();
   },
   // map with ranked sites, open #1
