@@ -161,7 +161,7 @@ export default function Review() {
                   className="absolute h-[6px] hover:h-[9px]" style={{ left: `${(d.first / m.fps / dur) * 100}%`, width: `${Math.max(0.4, ((d.last - d.first) / m.fps / dur) * 100)}%`, top: `${(i % 5) * 8}px`, background: d.color, outline: sel?.id === d.id ? "1px solid #000" : undefined }} />
               ))}
             </div>
-            <div className="absolute inset-0 pointer-events-none" style={{ containerType: "inline-size" }}><div ref={headRef} className="absolute top-0 bottom-0 left-0 w-[2px] -ml-px bg-black will-change-transform" /></div>
+            <div className="absolute inset-0 pointer-events-none" style={{ containerType: "inline-size" }}><div ref={headRef} className="absolute top-0 h-[30px] left-0 w-[4px] -ml-[2px] bg-black will-change-transform" /></div>
           </div>
         </div>
       </section>

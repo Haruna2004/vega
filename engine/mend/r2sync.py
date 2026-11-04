@@ -97,23 +97,39 @@ def write_index() -> None:
         log.warning("index sync failed: %s", exc)
 
 
-def hydrate_run(run_id: str, root: Path) -> bool:
-    """Download a run folder from R2 if it is not on local disk."""
+HEAVY = (".mp4", ".webm", ".mov")
+HEAVY_DIRS = ("/frames/", "/chunks/", "/inputs/")
+
+
+def hydrate_run(run_id: str, root: Path, full: bool = False) -> bool:
+    """Download a run folder from R2 if it is not on local disk.
+
+    Light mode (default) skips video, frames and chunks: Ask, voice notes and
+    rate edits only need the JSON and evidence images, so a cold instance can
+    answer in a second instead of pulling ~70 MB first. Reprocessing asks for full."""
+    from concurrent.futures import ThreadPoolExecutor
+
     if not enabled():
         return False
     keys = list_keys(f"runs/{run_id}/")
     if not keys:
         return False
-    for k in keys:
+    if not full:
+        keys = [k for k in keys if not k["key"].endswith(HEAVY) and not any(d in k["key"] for d in HEAVY_DIRS)]
+
+    def fetch(k):
         dst = root / k["key"][len("runs/") :]
         if dst.exists() and dst.stat().st_size == k["size"]:
-            continue
+            return
         data = get_bytes(k["key"])
         if data is None:
-            continue
+            return
         dst.parent.mkdir(parents=True, exist_ok=True)
         dst.write_bytes(data)
         _sent[k["key"]] = dst.stat().st_mtime
+
+    with ThreadPoolExecutor(max_workers=12) as pool:
+        list(pool.map(fetch, keys))
     return True
 
 

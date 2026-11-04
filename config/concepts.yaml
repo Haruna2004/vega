@@ -51,7 +51,7 @@ concepts:
     base_severity: 2
     treatment: crack_seal
     quantity: length
-    baseline: true
+    baseline: false  # only when Spark triage flags cracks
   rutting:
     label: Rutting
     sam_prompt: wheel rut
@@ -101,7 +101,7 @@ concepts:
     base_severity: 2
     treatment: drainage_inspection
     quantity: count
-    baseline: true
+    baseline: false  # only when Spark triage flags water
   faded_lane_marking:
     label: Faded lane marking
     sam_prompt: faded lane marking

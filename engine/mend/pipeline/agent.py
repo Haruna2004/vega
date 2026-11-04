@@ -162,7 +162,9 @@ class Tools:
 def ask(run: Run, question: str, history: list[dict] | None = None) -> dict:
     tools = Tools(run)
     summary = run.read("summary", {})
-    system = render("agent_system", currency=summary.get("currency", "USD"), summary=json.dumps(summary))
+    # Compact survey table in the prompt: most questions are answered in one call, no tool round-trip.
+    digest = {"summary": summary, "sites": tools.list_sites(limit=30), "defects": [_compact_defect(d) for d in tools.defects.values() if not d.get("dismissed")][:80]}
+    system = render("agent_system", currency=summary.get("currency", "USD"), summary=json.dumps(digest, ensure_ascii=False))
     messages: list[dict] = [{"role": "system", "content": system}]
     for h in (history or [])[-6:]:
         if h.get("role") in ("user", "assistant") and h.get("content"):
@@ -171,7 +173,7 @@ def ask(run: Run, question: str, history: list[dict] | None = None) -> dict:
     steps: list[dict] = []
     answer = ""
     for _ in range(MAX_STEPS):
-        resp = client().spark_chat(messages, tools=Tools.schemas(), reasoning_effort="low", tag="agent")
+        resp = client().spark_chat(messages, tools=Tools.schemas(), reasoning_effort="minimal", tag="agent")
         msg = resp["choices"][0]["message"]
         calls = msg.get("tool_calls") or []
         if not calls:

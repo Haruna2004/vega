@@ -29,6 +29,10 @@ STITCH_IOU = 0.45
 MAX_FRAME_FRACTION = 0.35  # a "pothole" covering a third of the frame is the road, not a pothole
 
 
+class SurfaceMatch(RuntimeError):
+    """The prompt is segmenting the road itself, not a defect: stop paying for it."""
+
+
 class JobCollector:
     """Turns cumulative parser snapshots into per-object detections + live events."""
 
@@ -42,6 +46,9 @@ class JobCollector:
         self.pending: list[dict] = []
         self.last_flush = time.time()
         self.lock = threading.Lock()
+        self.frame_area = media["width"] * media["height"]
+        self.big = 0
+        self.total = 0
         c = concept_cfg(job["concept"])
         self.color = c["color"]
         self.label = c["label"]
@@ -58,6 +65,13 @@ class JobCollector:
             b = rec.bounds
             box = [int(b.left), int(b.top), int(b.right), int(b.bottom)]
             m = stored_mask(rec)
+            # cheap pre-check from the box: a box over half the frame is the road, skip the costly decode
+            if (box[2] - box[0]) * (box[3] - box[1]) > 0.5 * self.frame_area and self.job["concept"] not in ("standing_water", "rutting", "alligator_crack"):
+                self.total += 1
+                self.big += 1
+                if self.big >= 12 and self.big > 0.6 * self.total:
+                    raise SurfaceMatch(f"{self.job['prompt']!r} matched the road surface; stopped early")
+                continue
             try:
                 arr = decode(m)
             except Exception as exc:  # invalid payload: skip record, keep stream
@@ -66,6 +80,11 @@ class JobCollector:
             area = int(arr.sum())
             if area == 0:
                 continue
+            self.total += 1
+            if area > MAX_FRAME_FRACTION * self.frame_area:
+                self.big += 1
+                if self.big >= 12 and self.big > 0.6 * self.total and self.job["concept"] not in ("standing_water", "rutting", "alligator_crack"):
+                    raise SurfaceMatch(f"{self.job['prompt']!r} matched the road surface; stopped early")
             rings = polygons(arr, box[0], box[1])
             det = {"f": frame, "b": box, "c": None if rec.confidence is None else round(float(rec.confidence), 3), "a": area, "poly": rings, "m": m}
             self.objects[rec.object_id][frame] = det
@@ -238,12 +257,17 @@ def segment(run: Run) -> dict:
         col.flush()
         return {"job": job, "objects": col.objects, "cached": res.cached, "duration_s": round(time.time() - t0, 2), "api_s": round(res.duration_s, 2), "usage": res.usage, "diagnostics": [str(d) for d in getattr(res.result, "diagnostics", ())][:5]}
 
-    with ThreadPoolExecutor(max_workers=3) as pool:
+    with ThreadPoolExecutor(max_workers=6) as pool:
         futures = {pool.submit(work, j): j for j in jobs}
         for fut in as_completed(futures):
             job = futures[fut]
             try:
                 out = fut.result()
+            except SurfaceMatch as exc:
+                job_log.append({"id": job["id"], "prompt": job["prompt"], "n_objects": 0, "skipped": str(exc)})
+                run.emit("sam_job", job=job["id"], status="done", n_objects=0, skipped=True)
+                run.log(str(exc), level="warn")
+                continue
             except (OfflineCacheMiss, BudgetExceeded) as exc:
                 job_log.append({"id": job["id"], "prompt": job["prompt"], "error": str(exc)})
                 run.emit("sam_job", job=job["id"], status="failed", error=str(exc)[:300])

@@ -120,7 +120,7 @@ def triage(run: Run) -> dict:
     def work(batch):
         return _triage_batch(run, batch)
 
-    with ThreadPoolExecutor(max_workers=3) as pool:
+    with ThreadPoolExecutor(max_workers=6) as pool:
         futures = [pool.submit(work, b) for b in batches]
         for b, fut in zip(batches, futures):
             try:

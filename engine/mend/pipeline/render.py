@@ -38,7 +38,7 @@ def render_media(run: Run, media: dict, tracks: list[dict], defects_by_track: di
     out = run.dir / f"annotated_{media['media_id']}.mp4"
     W, H = media["width"], media["height"]
     proc = subprocess.Popen(
-        ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}", "-r", str(media["fps"]), "-i", "-", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(out)],
+        ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}", "-r", str(media["fps"]), "-i", "-", "-c:v", "libx264", "-preset", "superfast", "-crf", "20", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(out)],
         stdin=subprocess.PIPE,
     )
     cap = cv2.VideoCapture(str(run.dir / media["proxy"]))

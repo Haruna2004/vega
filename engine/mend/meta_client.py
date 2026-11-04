@@ -306,7 +306,7 @@ class MetaClient:
         # Wait for server-side processing if the API reports it.
         for _ in range(60):
             status = data.get("status")
-            if status not in ("uploaded", "processing", "pending"):
+            if status not in ("processing", "pending"):  # "uploaded"/"processed" = ready
                 break
             time.sleep(2)
             data = self.openai().files.retrieve(data["id"]).model_dump()

@@ -50,7 +50,7 @@ def _http_get_json(kind: str, url: str, params: dict, *, offline: bool) -> dict 
         return None
     s = get_settings()
     try:
-        r = httpx.get(url, params=params, headers={"User-Agent": s.user_agent}, timeout=60)
+        r = httpx.get(url, params=params, headers={"User-Agent": s.user_agent}, timeout=20)
         r.raise_for_status()
         data = r.json()
     except Exception:

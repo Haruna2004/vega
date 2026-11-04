@@ -66,15 +66,16 @@ def make_proxy(src: Path, dst: Path, fps: float, max_height: int, start_s: float
     cmd += ["-i", str(src)]
     if max_seconds:
         cmd += ["-t", f"{max_seconds:.3f}"]
-    cmd += ["-vf", vf, "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-g", str(int(fps)), "-movflags", "+faststart", str(dst)]
+    cmd += ["-vf", vf, "-an", "-c:v", "libx264", "-preset", "superfast", "-crf", "20", "-g", str(int(fps)), "-movflags", "+faststart", str(dst)]
     subprocess.run(cmd, check=True)
 
 
 def cut_chunk(proxy: Path, dst: Path, start: int, end: int, fps: float) -> None:
     """Frame-exact sub-clip [start, end) of the proxy."""
-    vf = f"select='between(n\\,{start}\\,{end - 1})',setpts=N/({fps}*TB)"
+    # Accurate seek (decode only from the nearest keyframe; the proxy has one every second)
+    # instead of decoding the whole proxy for every chunk.
     subprocess.run(
-        ["ffmpeg", "-v", "error", "-y", "-i", str(proxy), "-vf", vf, "-r", str(fps), "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(dst)],
+        ["ffmpeg", "-v", "error", "-y", "-ss", f"{start / fps:.4f}", "-i", str(proxy), "-frames:v", str(end - start), "-r", str(fps), "-an", "-c:v", "libx264", "-preset", "superfast", "-crf", "18", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(dst)],
         check=True,
     )
 
@@ -191,9 +192,13 @@ def ingest(run: Run, inputs: list[Path], *, drawn_route: list[dict] | None = Non
                 }
             )
             chunks = []
-            for ci, (a, b) in enumerate(plan_chunks(n, s.proxy_fps, s.chunk_seconds, s.chunk_overlap_frames)):
+            plan = plan_chunks(n, s.proxy_fps, s.chunk_seconds, s.chunk_overlap_frames)
+            from concurrent.futures import ThreadPoolExecutor
+
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                list(pool.map(lambda x: cut_chunk(proxy, run.dir / "chunks" / f"{media_id}_c{x[0]:02d}.mp4", x[1][0], x[1][1], s.proxy_fps), enumerate(plan)))
+            for ci, (a, b) in enumerate(plan):
                 cpath = run.dir / "chunks" / f"{media_id}_c{ci:02d}.mp4"
-                cut_chunk(proxy, cpath, a, b, s.proxy_fps)
                 got = count_frames(cpath)
                 if got != b - a:
                     run.log(f"chunk {ci}: expected {b - a} frames, got {got}", level="warn")

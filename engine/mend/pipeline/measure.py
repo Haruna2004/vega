@@ -42,12 +42,21 @@ FAR_M = 12.0  # beyond this, perspective makes 1 px span many cm: widen the rang
 # ----------------------------------------------------------------- calibration
 def _road_apex(run: Run, media: dict, frames: list[dict]) -> tuple[float | None, list[dict]]:
     """Horizon from SAM 3.1 'road' masks on a few sampled frames."""
+    from concurrent.futures import ThreadPoolExecutor
+
     picks = frames[:: max(1, len(frames) // 4)][:4] if frames else []
     apexes, notes = [], []
-    for f in picks:
+
+    def call(f):
         try:
-            res = client().sam_segment("image", run.dir / f["path"], "road", tag="calibration")
+            return f, client().sam_segment("image", run.dir / f["path"], "road", tag="calibration"), None
         except Exception as exc:
+            return f, None, exc
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        results = list(pool.map(call, picks))
+    for f, res, exc in results:
+        if exc is not None:
             notes.append({"frame": f["id"], "error": str(exc)[:200]})
             continue
         best = None
@@ -446,7 +455,7 @@ def measure(run: Run) -> dict:
     reviews: dict[str, dict] = {}
     with_evidence = [d for d in defects if d.get("evidence")]
     batches = [with_evidence[i : i + JUDGE_BATCH] for i in range(0, len(with_evidence), JUDGE_BATCH)]
-    with ThreadPoolExecutor(max_workers=3) as pool:
+    with ThreadPoolExecutor(max_workers=6) as pool:
         for res in pool.map(lambda b: _safe_judge(run, b), batches):
             reviews.update(res)
 

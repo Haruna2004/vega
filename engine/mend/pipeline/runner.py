@@ -32,6 +32,10 @@ def run_pipeline(run: Run, inputs: list[Path] | None = None, *, from_stage: str 
     from .ingest import ingest
 
     token = current_run_dir.set(run.dir)
+    if from_stage != "ingest":
+        from .. import r2sync
+
+        r2sync.hydrate_run(run.id, run.root, full=True)  # reprocessing needs video + chunks
     try:
         if from_stage == "ingest":
             run.reset_events()
