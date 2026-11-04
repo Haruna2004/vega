@@ -79,7 +79,7 @@ def _road_apex(run: Run, media: dict, frames: list[dict]) -> tuple[float | None,
         apex = (rec.bounds.top + rows[0]) / media["height"]
         coverage = area / (media["width"] * media["height"])
         notes.append({"frame": f["id"], "apex_frac": round(float(apex), 4), "road_coverage": round(coverage, 3)})
-        if 0.15 < apex < 0.75 and coverage > 0.05:
+        if 0.05 < apex < 0.75 and coverage > 0.05:
             apexes.append(float(apex))
     if len(apexes) >= 1:
         return statistics.median(apexes) - 0.01, notes
@@ -133,7 +133,7 @@ def calibrate(run: Run, media: dict, frames: list[dict], triage: dict | None) ->
         cal["estimates"]["sam_road"] = notes
         if apex is not None:
             horizon, method = apex, "sam_road_apex"
-        elif spark and 0.15 < float(spark.get("horizon_y_frac", 0)) < 0.75:
+        elif spark and 0.05 < float(spark.get("horizon_y_frac", 0)) < 0.75:
             horizon, method = float(spark["horizon_y_frac"]), "spark_estimate"
         else:
             horizon, method = DEFAULT_HORIZON, "default"
