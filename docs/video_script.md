@@ -11,7 +11,7 @@ Voice: calm, plain, one narrator. Captions follow the voice. Lower thirds in bra
 | 1:20 to 1:40 | Map. Road coloured by condition. Ranked sites list. Open site #1. | On the map the road is coloured by condition. Defects close together become repair sites, ranked by risk to people. Severity matters, and so does what is nearby. Schools, clinics and bus stops come from OpenStreetMap. |
 | 1:40 to 2:00 | Record a voice note on site #1: "Kids cross here every morning." Transcript appears, rank updates. [Muse Voice Transcribe] | Inspectors know things a camera cannot see. Record a voice note, and Muse Voice Transcribe turns it into text. Muse Spark reads it and adjusts the ranking. This site just moved up. |
 | 2:00 to 2:22 | Work orders. Edit a unit rate, total updates. Download the PDF, show it. | Then the paperwork. Work orders and a bill of quantities are built from the measurements. Change a unit rate and every total updates. Download a plain document with signature lines, ready for a contractor. |
-| 2:22 to 2:42 | Ask: "What would it cost to fix everything near a school?" Answer appears with site and defect ids. | And you can just ask. Muse Spark answers from the survey itself and cites the exact sites and defects, so every number can be checked. |
+| 2:22 to 2:42 | Ask: "Which site should we fix first, and what will it cost?" Answer appears with site and defect ids. | And you can just ask. Muse Spark answers from the survey itself and cites the exact sites and defects, so every number can be checked. |
 | 2:42 to 2:50 | End card: mend.harunafaruk.com, GitHub repo, "Built with Muse Spark, SAM 3.1 and Muse Voice Transcribe". | MEND. One drive, a repair plan you can act on. Built on Meta's models, live today. |
 
 About 400 words.

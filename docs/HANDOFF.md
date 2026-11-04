@@ -24,7 +24,7 @@ Read first: `README.md`, `docs/hackathon_page.md` (rules and judging), `DESIGN.m
 - 1:15 Map: road coloured by condition, ranked sites. Open the #1 site.
 - 1:35 Voice note on that site ("kids cross here every morning"): transcript appears, rank changes.
 - 1:55 Work orders: edit a unit rate, total updates, download the PDF (plain document with signature lines).
-- 2:20 Ask: "What would it cost to fix everything near a school?" Answer cites site and defect ids.
+- 2:20 Ask: "Which site should we fix first, and what will it cost?" Answer cites site and defect ids.
 - 2:45 Close: what is built on Meta models, live URL.
 
 ## Submission form fields to draft

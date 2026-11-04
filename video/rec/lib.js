@@ -3,7 +3,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const BASE = 'https://mend.harunafaruk.com';
-const RUN = '20261104-143311-bolonge';
+const RUN = '20261104-160433-bolonge';
 const OUT = path.join(__dirname, '..', 'public', 'rec');
 
 const CURSOR = `

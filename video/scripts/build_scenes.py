@@ -3,7 +3,7 @@ import json, os, subprocess
 D = {k: v for k, v in ((f[:-4], float(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","csv=p=0",f"public/vo3/{f}"]))) for f in sorted(os.listdir("public/vo3")))}
 M = lambda n: json.load(open(f"public/rec/{n}.marks.json")) if os.path.exists(f"public/rec/{n}.marks.json") else {}
 Z = json.load(open("scripts/zooms.json")) if os.path.exists("scripts/zooms.json") else {}
-lower = {"s3": "SAM 3.1 tracking", "s4": "Muse Spark review", "s5": "OpenStreetMap context", "s6": "Muse Voice Transcribe", "s8": "Muse Spark answers"}
+lower = {"s3": "SAM 3.1 tracking", "s4": "Muse Spark review", "s5": "Ranked by risk", "s6": "Muse Voice Transcribe", "s8": "Muse Spark answers"}
 out = []
 for k in ["s1","s2","s3","s4","s5","s6","s7","s8","s9"]:
     sc = {"id": k, "vo": round(D[k], 2)}

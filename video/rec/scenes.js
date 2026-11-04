@@ -113,7 +113,7 @@ const S = {
     await h.wait(2000);
     h.mark('start');
     await h.click('input[placeholder^="Ask"]', 1000);
-    await h.type(process.env.Q || 'What would it cost to fix everything near a school?', 45);
+    await h.type(process.env.Q || 'Which site should we fix first, and what will it cost?', 45);
     await h.wait(500);
     await h.page.keyboard.press('Enter');
     h.mark('asked');
