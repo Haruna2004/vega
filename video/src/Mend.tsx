@@ -1,4 +1,4 @@
-import { AbsoluteFill, Audio, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig, Easing } from "remotion";
+import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig, Easing } from "remotion";
 import { loadFont } from "@remotion/google-fonts/Inter";
 import scenes from "./scenes.json";
 const { fontFamily: INTER } = loadFont("normal", { weights: ["400", "500", "600", "800"], subsets: ["latin"] });
@@ -10,7 +10,7 @@ const C = { mist: "#f6f8f7", ink: "#1b1c1f", carbon: "#0f0e12", amber: "#f0a800"
 const FONT = `${INTER}, Arial, sans-serif`;
 
 type Zoom = { at: number; dur: number; x: number; y: number; s: number };
-type Scene = { id: string; vo: number; clip?: string; clipStart?: number; rate?: number; lower?: string; zooms?: Zoom[]; kind?: string; lead?: number };
+type Scene = { id: string; vo: number; clip?: string; clipStart?: number; rate?: number; lower?: string; zooms?: Zoom[]; kind?: string; lead?: number; still?: string; stillAt?: number };
 
 const S = scenes as Scene[];
 const lenOf = (s: Scene) => Math.round(((s.lead || 0) + s.vo + GAP) * FPS);
@@ -79,6 +79,18 @@ const Clip = ({ sc }: { sc: Scene }) => {
   );
 };
 
+const Still = ({ src, at }: { src: string; at: number }) => {
+  const f = useCurrentFrame() - at * FPS;
+  if (f < 0) return null;
+  const o = interpolate(f, [0, 12], [0, 1], { extrapolateRight: "clamp" });
+  const y = interpolate(f, [20, 9 * FPS], [0, -520], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
+  return (
+    <AbsoluteFill style={{ background: C.mist, opacity: o, alignItems: "center", overflow: "hidden" }}>
+      <Img src={staticFile(src)} style={{ width: 860, marginTop: 60, transform: `translateY(${y}px)`, boxShadow: "0 0 0 1px rgba(15,14,18,0.14)" }} />
+    </AbsoluteFill>
+  );
+};
+
 const Title = () => {
   const f = useCurrentFrame();
   const o = interpolate(f, [10, 30, 4.2 * FPS, 5 * FPS], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
@@ -126,6 +138,7 @@ export const Mend = () => {
         return (
           <Sequence key={sc.id} from={from} durationInFrames={dur}>
             {sc.kind === "end" ? <EndCard /> : <Clip sc={sc} />}
+            {sc.still && <Still src={sc.still} at={sc.stillAt || 0} />}
             {sc.kind === "title" && <Title />}
             <Sequence from={lead}>
               <Audio src={staticFile(`vo3/${sc.id}.wav`)} />

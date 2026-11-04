@@ -10,48 +10,103 @@
   "id": "s2",
   "vo": 19.06,
   "clip": "rec/s2.mp4",
-  "clipStart": 18.38
+  "clipStart": 2.22
  },
  {
   "id": "s3",
   "vo": 22.73,
   "clip": "rec/s3.mp4",
-  "clipStart": 4.89,
-  "lower": "SAM 3.1 tracking"
+  "clipStart": 9.12,
+  "lower": "SAM 3.1 tracking",
+  "rate": 2.3
  },
  {
   "id": "s4",
   "vo": 20.5,
   "clip": "rec/s4.mp4",
-  "clipStart": 4.8,
-  "lower": "Muse Spark review"
+  "clipStart": 4.86,
+  "lower": "Muse Spark review",
+  "zooms": [
+   {
+    "at": 7.0,
+    "dur": 3.2,
+    "x": 0.62,
+    "y": 0.42,
+    "s": 1.7
+   },
+   {
+    "at": 11.5,
+    "dur": 8.0,
+    "x": 0.95,
+    "y": 0.62,
+    "s": 1.8
+   }
+  ]
  },
  {
   "id": "s5",
   "vo": 19.59,
   "clip": "rec/s5.mp4",
-  "clipStart": -0.3,
-  "lower": "OpenStreetMap context"
+  "clipStart": 8.37,
+  "lower": "Ranked by risk",
+  "zooms": [
+   {
+    "at": 13.5,
+    "dur": 6.0,
+    "x": 0.95,
+    "y": 0.2,
+    "s": 1.6
+   }
+  ]
  },
  {
   "id": "s6",
-  "vo": 16.86,
+  "vo": 18.54,
   "clip": "rec/s6.mp4",
-  "clipStart": -0.3,
-  "lower": "Muse Voice Transcribe"
+  "clipStart": 13.22,
+  "lower": "Muse Voice Transcribe",
+  "zooms": [
+   {
+    "at": 1.5,
+    "dur": 30,
+    "x": 0.97,
+    "y": 0.75,
+    "s": 1.6
+   }
+  ]
  },
  {
   "id": "s7",
   "vo": 18.5,
   "clip": "rec/s7.mp4",
-  "clipStart": 4.86
+  "clipStart": 4.94,
+  "still": "rec/pdf.png",
+  "stillAt": 11.5,
+  "zooms": [
+   {
+    "at": 4.2,
+    "dur": 5.5,
+    "x": 0.97,
+    "y": 0.25,
+    "s": 1.7
+   }
+  ]
  },
  {
   "id": "s8",
   "vo": 14.5,
   "clip": "rec/s8.mp4",
-  "clipStart": -0.3,
-  "lower": "Muse Spark answers"
+  "clipStart": 4.69,
+  "lower": "Muse Spark answers",
+  "zooms": [
+   {
+    "at": 6.5,
+    "dur": 9,
+    "x": 0.45,
+    "y": 0.12,
+    "s": 1.6
+   }
+  ]
  },
  {
   "id": "s9",
