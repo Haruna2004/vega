@@ -7,7 +7,7 @@ out = {}
 for k, text in LINES.items():
     path = f"public/vo/{k}.wav"
     if not os.path.exists(path):
-        body = {"contents": [{"parts": [{"text": "Read this in a calm, warm, clear documentary voice, at a natural unhurried pace:\n" + text}]}],
+        body = {"contents": [{"parts": [{"text": text}]}],
                 "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": VOICE}}}}}
         req = urllib.request.Request(f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={KEY}", data=json.dumps(body).encode(), headers={"content-type": "application/json"})
         r = json.load(urllib.request.urlopen(req, timeout=180))

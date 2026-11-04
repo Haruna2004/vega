@@ -14,10 +14,10 @@ const C = { mist: "#f6f8f7", ink: "#1b1c1f", carbon: "#0f0e12", amber: "#f0a800"
 const FONT = `${INTER}, Arial, sans-serif`;
 
 type Zoom = { at: number; dur: number; x: number; y: number; s: number };
-type Scene = { id: string; vo: number; clip?: string; clipStart?: number; rate?: number; lower?: string; zooms?: Zoom[]; kind?: string; lead?: number; still?: string; stillAt?: number; clip2?: string; clip2At?: number; clip2Start?: number };
+type Scene = { id: string; vo: number; clip?: string; clipStart?: number; rate?: number; lower?: string; zooms?: Zoom[]; kind?: string; lead?: number; still?: string; stillAt?: number; clip2?: string; clip2At?: number; clip2Start?: number; min?: number };
 
 const S = scenes as Scene[];
-const lenOf = (s: Scene) => Math.round(((s.lead || 0) + s.vo + GAP) * FPS);
+const lenOf = (s: Scene) => Math.round(Math.max((s.lead || 0) + s.vo + GAP, s.min || 0) * FPS);
 export const totalFrames = () => S.reduce((a, s) => a + lenOf(s), 0);
 
 function chunks(text: string): string[] {

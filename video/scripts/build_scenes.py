@@ -16,4 +16,4 @@ for k in ["s1","s2","s3","s4","s5","s6","s7","s8","s9"]:
     sc.update({a: b for a, b in Z.get(k, {}).items() if a != "clipStartMark"})
     out.append(sc)
 json.dump(out, open("src/scenes.json","w"), indent=1)
-print(sum(s["vo"] + 0.7 + s.get("lead",0) for s in out), "s total")
+print(sum(max(s["vo"] + 0.7 + s.get("lead",0), s.get("min",0)) for s in out), "s total")
