@@ -63,14 +63,24 @@
   "id": "s6",
   "vo": 18.54,
   "clip": "rec/s6.mp4",
-  "clipStart": 13.22,
+  "clipStart": 12.74,
   "lower": "Muse Voice Transcribe",
+  "clip2": "rec/s6b.mp4",
+  "clip2At": 12.0,
+  "clip2Start": 11.4,
   "zooms": [
    {
-    "at": 1.5,
-    "dur": 30,
+    "at": 0.6,
+    "dur": 10.4,
     "x": 0.97,
-    "y": 0.75,
+    "y": 0.92,
+    "s": 1.6
+   },
+   {
+    "at": 13.0,
+    "dur": 7,
+    "x": 0.97,
+    "y": 0.3,
     "s": 1.6
    }
   ]

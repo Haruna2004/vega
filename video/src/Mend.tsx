@@ -10,7 +10,7 @@ const C = { mist: "#f6f8f7", ink: "#1b1c1f", carbon: "#0f0e12", amber: "#f0a800"
 const FONT = `${INTER}, Arial, sans-serif`;
 
 type Zoom = { at: number; dur: number; x: number; y: number; s: number };
-type Scene = { id: string; vo: number; clip?: string; clipStart?: number; rate?: number; lower?: string; zooms?: Zoom[]; kind?: string; lead?: number; still?: string; stillAt?: number };
+type Scene = { id: string; vo: number; clip?: string; clipStart?: number; rate?: number; lower?: string; zooms?: Zoom[]; kind?: string; lead?: number; still?: string; stillAt?: number; clip2?: string; clip2At?: number; clip2Start?: number };
 
 const S = scenes as Scene[];
 const lenOf = (s: Scene) => Math.round(((s.lead || 0) + s.vo + GAP) * FPS);
@@ -74,7 +74,13 @@ const Clip = ({ sc }: { sc: Scene }) => {
   const { s, x, y } = zoomAt(sc.zooms, f / FPS);
   return (
     <AbsoluteFill style={{ transform: `scale(${s})`, transformOrigin: `${x * 100}% ${y * 100}%` }}>
-      <OffthreadVideo src={staticFile(sc.clip!)} startFrom={Math.round((sc.clipStart || 0) * FPS)} playbackRate={sc.rate || 1} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      {sc.clip2 && f >= (sc.clip2At || 0) * FPS ? (
+        <Sequence from={Math.round((sc.clip2At || 0) * FPS)}>
+          <OffthreadVideo src={staticFile(sc.clip2)} startFrom={Math.round((sc.clip2Start || 0) * FPS)} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </Sequence>
+      ) : (
+        <OffthreadVideo src={staticFile(sc.clip!)} startFrom={Math.round((sc.clipStart || 0) * FPS)} playbackRate={sc.rate || 1} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      )}
     </AbsoluteFill>
   );
 };

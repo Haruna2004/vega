@@ -11,7 +11,7 @@ for k in ["s1","s2","s3","s4","s5","s6","s7","s8","s9"]:
     elif k == "s9": sc.update(kind="end")
     else:
         m = M(k); z = Z.get(k, {})
-        sc.update(clip=f"rec/{k}.mp4", clipStart=round(m.get(z.get("clipStartMark", "start"), 0) - 0.3, 2))
+        sc.update(clip=f"rec/{k}.mp4", clipStart=round(m.get(z.get("clipStartMark", "start"), 0) - (1.5 if k == "s6" else 0.3), 2))
     if k in lower: sc["lower"] = lower[k]
     sc.update({a: b for a, b in Z.get(k, {}).items() if a != "clipStartMark"})
     out.append(sc)

@@ -85,7 +85,22 @@ const S = {
     await h.wait(9000);
     await h.page.mouse.up();
     h.mark('sent');
-    await h.wait(52000);
+    await h.wait(30000);
+    await h.done();
+  },
+  // after the note: S04 with its new score and the field note
+  async s6b() {
+    const h = await open('s6b');
+    await go(h, `${R}/map`);
+    await h.wait(5000);
+    await h.click(h.page.locator(`button:visible:has-text("${process.env.SITE || "S04"}")`).first(), 900);
+    h.mark('start');
+    await h.wait(2500);
+    await h.move(1700, 120, 900); await h.wait(2500);
+    const note = h.page.locator('text=Field note').first();
+    await note.scrollIntoViewIfNeeded().catch(() => {});
+    await h.move(1700, 700, 900);
+    await h.wait(6000);
     await h.done();
   },
   // work orders: edit a rate, download pdf
