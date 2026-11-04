@@ -18,7 +18,7 @@ It is live at https://mend.harunafaruk.com. The engine runs on Google Cloud Run 
 
 **Public GitHub repo:** https://github.com/Haruna2004/vega
 
-**Demo video:** https://mend.harunafaruk.com/download/mend-demo.mp4
+**Demo video:** https://www.youtube.com/watch?v=Khcg06RGetc
 
 **Use of Meta products**
 
@@ -26,6 +26,6 @@ MEND uses three Meta models through the Meta Model API, and each one does a job 
 
 **Why Meta's models are important**
 
-The hard part of this problem is turning pixels into numbers someone can sign a contract against. SAM 3.1 gives me precise masks that stay locked onto the same pothole as the camera moves, which is what makes measurement and de-duplication possible at all. A box or a label would not be enough to get an area. Muse Spark is strong enough at looking at an image and reasoning about it that it can act as the reviewer a human engineer would otherwise be, and it does it with structured output I can build on. Putting the two together means one person with a phone can produce a survey that used to need a team and a week, and every Meta API response is cached by content hash, so re-running a survey costs nothing.
+The hard part of this problem is turning pixels into numbers someone can sign a contract against. SAM 3.1 gives me precise masks that stay locked onto the same pothole as the camera moves, which is what makes measurement and de-duplication possible at all. A box or a label would not be enough to get an area. Muse Spark is strong enough at looking at an image and reasoning about it that it can act as the reviewer a human engineer would otherwise be, and it does it with structured output I can build on. Putting the two together means one person with a phone can produce a measured, ranked survey with the paperwork attached. Every Meta API response is cached by content hash, so re-running a survey costs nothing.
 
 **X post (optional):** add link if you post one.
