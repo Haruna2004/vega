@@ -16,7 +16,7 @@ const STEPS: Step[] = [
   {
     n: "02", title: "Every defect outlined and measured",
     body: "SAM 3.1 outlines each pothole and follows it through the video, so one hole is counted once. A camera model projects the mask onto the road and gives its area in square metres, with a range.",
-    model: "SAM 3.1", img: "/shots/review.webp", alt: "Survey video with each pothole outlined, the processing steps and live counters",
+    model: "SAM 3.1", img: "/shots/stage.webp", alt: "Survey video with each pothole outlined, the processing steps and live counters",
   },
   {
     n: "03", title: "Checked like an engineer would",
@@ -116,7 +116,7 @@ export default function Landing() {
               <h2 className="text-[24px] md:text-[30px] h-light mt-4 leading-[1.15]">{s.title}</h2>
               <p className="mt-4 text-[15px] font-light leading-relaxed text-ink/80">{s.body}</p>
             </div>
-            <div className={`md:col-span-8 ${i % 2 ? "md:order-1" : ""} ${s.tall ? "md:px-16" : ""}`}>
+            <div className={`md:col-span-8 ${i % 2 ? "md:order-1" : ""} ${s.tall ? "max-w-[460px] w-full mx-auto" : ""}`}>
               <Shot s={s} />
             </div>
           </section>
@@ -141,8 +141,8 @@ export default function Landing() {
             <div className="mt-4 text-graphite text-[15px] font-light max-w-[560px]">For road authorities, city works departments and maintenance contractors.</div>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link to="/app" className="btn px-5 py-2.5 border-mist text-mist hover:bg-mist hover:text-carbon">Open platform</Link>
-            <Link to="/capture" className="btn px-5 py-2.5 bg-mist text-carbon border-mist hover:bg-graphite">Record a drive</Link>
+            <Link to="/app" className="btn px-5 py-2.5" style={{ color: "#f6f8f7", borderColor: "#f6f8f7" }}>Open platform</Link>
+            <Link to="/capture" className="btn px-5 py-2.5" style={{ background: "#f6f8f7", color: "#0f0e12", borderColor: "#f6f8f7" }}>Record a drive</Link>
           </div>
         </div>
       </section>
