@@ -18,7 +18,7 @@ import traceback
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "backend"))
+sys.path.insert(0, str(ROOT / "engine"))
 
 from mend.config import get_settings  # noqa: E402
 from mend.meta_client import data_url, get_client  # noqa: E402

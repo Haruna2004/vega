@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "backend"))
+sys.path.insert(0, str(ROOT / "engine"))
 
 from mend.config import get_settings  # noqa: E402
 from mend.devtools.fake_client import FakeMetaClient  # noqa: E402

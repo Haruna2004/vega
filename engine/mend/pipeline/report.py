@@ -25,7 +25,7 @@ from ..store import Run
 from . import client
 
 BUCKET_AREA = {"S": 0.25, "M": 0.6, "L": 1.5, "XL": 3.0}
-TEMPLATES = REPO_ROOT / "backend" / "mend" / "templates"
+TEMPLATES = Path(__file__).resolve().parents[1] / "templates"
 
 
 def effective_rates(run: Run) -> dict:
