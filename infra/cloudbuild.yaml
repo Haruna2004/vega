@@ -1,0 +1,4 @@
+steps:
+- name: gcr.io/cloud-builders/docker
+  args: ["build", "-f", "infra/engine.Dockerfile", "-t", "europe-west1-docker.pkg.dev/$PROJECT_ID/mend/engine:latest", "."]
+images: ["europe-west1-docker.pkg.dev/$PROJECT_ID/mend/engine:latest"]
