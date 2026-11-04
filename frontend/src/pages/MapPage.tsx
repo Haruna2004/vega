@@ -5,7 +5,7 @@ import Inspector, { MobileSheet } from "../components/Inspector";
 import { SEV, send } from "../lib/api";
 import { Sev } from "../components/ui";
 
-const STYLE = "https://tiles.openfreemap.org/styles/dark"; // OpenFreeMap: free, no key (OSM data)
+const STYLE = "https://tiles.openfreemap.org/styles/positron"; // OpenFreeMap: free, no key (OSM data)
 
 function haversine(a: number[], b: number[]) {
   const R = 6371008, r = Math.PI / 180;
@@ -41,12 +41,12 @@ export default function MapPage() {
           if (dist >= 20) {
             const mid = acc[Math.floor(acc.length / 2)];
             const worst = Math.max(0, ...located.filter((d) => haversine([d.lon!, d.lat!], mid) < 18).map((d) => d.severity));
-            feats.push({ type: "Feature", properties: { c: worst ? SEV[worst] : "#5b5b63" }, geometry: { type: "LineString", coordinates: acc } });
+            feats.push({ type: "Feature", properties: { c: worst ? SEV[worst] : "#8a8a92" }, geometry: { type: "LineString", coordinates: acc } });
             acc = [p]; dist = 0;
           }
         }
       }
-      if (acc.length > 1) feats.push({ type: "Feature", properties: { c: "#5b5b63" }, geometry: { type: "LineString", coordinates: acc } });
+      if (acc.length > 1) feats.push({ type: "Feature", properties: { c: "#8a8a92" }, geometry: { type: "LineString", coordinates: acc } });
     }
     return { type: "FeatureCollection", features: feats };
   }, [routeLines, defects]);
@@ -77,7 +77,7 @@ export default function MapPage() {
         const size = 14 + (s.priority_score / 100) * 26;
         const div = document.createElement("div");
         div.className = `relative flex items-center justify-center num text-[10px] text-black ${s.rank <= 10 ? "marker-pulse" : ""}`;
-        div.style.cssText = `width:${size}px;height:${size}px;background:${SEV[worst]};border-radius:9999px;color:${SEV[worst]};border:2px solid #0f0e12;cursor:pointer`;
+        div.style.cssText = `width:${size}px;height:${size}px;background:${SEV[worst]};border-radius:9999px;color:${SEV[worst]};border:2px solid #ffffff;cursor:pointer`;
         div.innerHTML = `<span style="color:#000">${s.rank}</span>`;
         div.onclick = () => setSel({ kind: "site", id: s.id });
         return new maplibregl.Marker({ element: div }).setLngLat([s.lon, s.lat]).addTo(m);
@@ -116,7 +116,7 @@ export default function MapPage() {
   return (
     <div className="lg:h-full flex flex-col lg:grid lg:grid-cols-[1fr_380px]">
       <MobileSheet />
-      <div className="relative bg-carbon h-[62vh] lg:h-auto">
+      <div className="relative bg-mist h-[62vh] lg:h-auto">
         <div ref={el} style={{ position: "absolute", inset: 0 }} />
         <div className="absolute left-2 top-2 lg:left-4 lg:top-4 bg-mist/95 border hair p-3 w-52 lg:w-64 space-y-2">
           <div className="label">Road condition</div>

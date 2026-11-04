@@ -1,39 +1,43 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><title>Request for Quotation: {{ run.name }}</title>
+<html><head><meta charset="utf-8"><title>Request for Quotation, {{ run.name }}</title>
 <style>{% include "_doc.css" %}</style></head>
 <body><div class="doc">
 <header class="top">
-  <div><div class="brand">MEND<span>.</span></div><div class="muted small">AI road defect audit</div></div>
-  <div class="small muted" style="text-align:right">{{ authority }}<br>Survey: {{ run.name }}<br>Generated {{ generated }}</div>
+  {% include "_brand.j2" %}
+  <div class="meta">Request for Quotation<br>{{ authority }}<br>Survey: {{ run.name }}<br>Issued {{ generated }}</div>
 </header>
-<h1>Request for Quotation: Road defect repairs</h1>
-<p class="muted">{{ sites|length }} sites · {{ boq.lines|length }} repair items · estimated total <b>{{ boq.total|money(sym) }}</b> ({{ boq.currency }}, incl. {{ boq.contingency_pct }}% contingency)</p>
-<h2>1. Executive summary</h2>{{ sections.executive_summary|md|safe }}
+<h1>Request for Quotation: road defect repairs</h1>
+<p class="sub">{{ sites|length }} sites, {{ boq.lines|length }} repair items, estimated total {{ boq.total|money(sym) }} ({{ boq.currency }}, including {{ boq.contingency_pct }}% contingency)</p>
+
+<h2>1. Summary</h2>{{ sections.executive_summary|md|safe }}
 <h2>2. Scope of works</h2>{{ sections.scope_of_works|md|safe }}
 <h3>Sites in priority order</h3>
 <table><tr><th>Rank</th><th>Site</th><th>Location</th><th>Defects</th><th class="num">Priority</th><th class="num">Site total</th></tr>
-{% for s in sites %}{% if boq.sites[s.id] and boq.sites[s.id].lines %}<tr><td>#{{ s.rank }}</td><td><b>{{ s.id }}</b></td><td>{{ s.street or "-" }}<br><span class="muted small">{{ "%.5f"|format(s.lat) }}, {{ "%.5f"|format(s.lon) }}{% if s.pois %} · near {{ s.pois[0].name }} ({{ s.pois[0].distance_m }} m){% endif %}</span></td>
-<td>{% for did in s.defect_ids %}{% set d = defects[did] %}{{ d.id }} <span class="sev sev{{ d.severity }}">{{ d.severity }}</span>{% if not loop.last %} {% endif %}{% endfor %}</td><td class="num">{{ s.priority_score }}</td><td class="num">{{ boq.sites[s.id].total|money(sym) }}</td></tr>{% endif %}{% endfor %}
+{% for s in sites %}{% if boq.sites[s.id] and boq.sites[s.id].lines %}<tr><td>{{ s.rank }}</td><td>{{ s.id }}</td><td>{{ s.street or "Unnamed road" }}<br><span class="small muted">{{ "%.5f"|format(s.lat) }}, {{ "%.5f"|format(s.lon) }}</span></td>
+<td>{% for did in s.defect_ids %}{{ did }} ({{ defects[did].severity }}){% if not loop.last %}, {% endif %}{% endfor %}</td><td class="num">{{ s.priority_score }}</td><td class="num">{{ boq.sites[s.id].total|money(sym) }}</td></tr>{% endif %}{% endfor %}
 </table>
+
 <h2>3. Bill of quantities</h2>
 <table><tr><th>Item</th><th>Unit</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">Amount</th><th>Defects</th></tr>
 {% for b in boq.by_treatment %}<tr><td>{{ b.description }}</td><td>{{ b.unit|replace("m2","m²") }}</td><td class="num">{{ "%.2f"|format(b.qty) }}</td><td class="num">{{ b.rate|money(sym) }}</td><td class="num">{{ b.amount|money(sym) }}</td><td class="small">{{ b.defects|join(", ") }}</td></tr>{% endfor %}
-<tr><td colspan="4">Mobilisation and traffic management ({{ boq.sites.values()|selectattr("lines")|list|length }} sites)</td><td class="num">{{ (boq.sites.values()|sum(attribute="mobilisation"))|money(sym) }}</td><td></td></tr>
+<tr><td colspan="4">Mobilisation and traffic management</td><td class="num">{{ (boq.sites.values()|sum(attribute="mobilisation"))|money(sym) }}</td><td></td></tr>
 <tr><td colspan="4">Subtotal</td><td class="num">{{ boq.subtotal|money(sym) }}</td><td></td></tr>
 <tr><td colspan="4">Contingency ({{ boq.contingency_pct }}%)</td><td class="num">{{ boq.contingency|money(sym) }}</td><td></td></tr>
-<tr class="total"><td colspan="4">Total estimate ({{ boq.currency }})</td><td class="num">{{ boq.total|money(sym) }}</td><td></td></tr></table>
-<div class="note">Unit rates are placeholders (config/unit_rates.yaml), not market prices. Quantities derive from measured defect sizes; each line cites its defect id. Sizes are camera-model estimates with the uncertainty ranges shown in the appendix.</div>
+<tr class="total"><td colspan="4">Total ({{ boq.currency }})</td><td class="num">{{ boq.total|money(sym) }}</td><td></td></tr></table>
+<p class="small muted">Unit rates are placeholders. Quantities come from measured defect sizes and each line names the defects it covers.</p>
+
 <h2>4. Technical specifications</h2>{{ sections.technical_specifications|md|safe }}
 <h2>5. Programme</h2>{{ sections.programme|md|safe }}
 <h2>6. Safety and traffic management</h2>{{ sections.safety_and_traffic_management|md|safe }}
 <h2>7. Measurement method</h2>
-<p>Defects were detected and tracked with SAM 3.1 (text-prompted segmentation over video). Each mask was projected onto the road plane with a pinhole camera model; the reported size is the median over the clearest frames, and the range combines camera-parameter uncertainty with frame-to-frame spread.</p>
-<table><tr><th>Media</th><th>Camera height</th><th>Horizontal FOV</th><th>Horizon</th><th>Horizon method</th></tr>
-{% for mid, c in calibration.items() %}<tr><td>{{ mid }}</td><td>{{ c.height_m }} m{% if not c.user_supplied %} (preset {{ c.preset }}){% endif %}</td><td>{{ c.hfov_deg }}°</td><td>{{ "%.2f"|format(c.horizon_y_frac) }}·H</td><td>{{ c.horizon_method|replace("_"," ") }}</td></tr>{% endfor %}</table>
-<h2 class="page-break">Appendix A: Evidence</h2>{{ sections.evidence_note|md|safe }}
+<p>Defects were outlined and tracked in the survey video with SAM 3.1, then measured on the road surface using a camera model. Each size is the median over the clearest frames. The range shown accounts for uncertainty in camera height, field of view and horizon.</p>
+
+{% include "_signatures.j2" %}
+
+<h2 class="page-break">Appendix: evidence</h2>{{ sections.evidence_note|md|safe }}
 <div class="evidence">
 {% for s in sites %}{% for did in s.defect_ids %}{% set d = defects[did] %}{% if d.evidence_frame %}
-<figure><img src="../{{ d.evidence_frame }}"><figcaption><b>{{ d.id }}</b> ({{ s.id }}) {{ d.label }} · severity {{ d.severity }} · {% if d.area_m2 is not none and d.quantity_key != "length_m" %}{{ "%.2f"|format(d.area_m2) }} m² ({{ "%.2f"|format(d.conf_low) }}–{{ "%.2f"|format(d.conf_high) }}){% elif d.length_m %}{{ "%.1f"|format(d.length_m) }} m{% else %}size {{ d.size_bucket }}{% endif %}{% if d.review and d.review.notes %}<br>{{ d.review.notes }}{% endif %}</figcaption></figure>
+<figure><img src="../{{ d.evidence_frame }}"><figcaption>{{ d.id }} ({{ s.id }}), {{ d.label }}, severity {{ d.severity }}, {% if d.area_m2 is not none and d.quantity_key != "length_m" %}{{ "%.2f"|format(d.area_m2) }} m²{% elif d.length_m %}{{ "%.1f"|format(d.length_m) }} m{% else %}size {{ d.size_bucket }}{% endif %}</figcaption></figure>
 {% endif %}{% endfor %}{% endfor %}
 </div>
 </div></body></html>

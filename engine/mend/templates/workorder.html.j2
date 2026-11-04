@@ -3,36 +3,44 @@
 <style>{% include "_doc.css" %}</style></head>
 <body><div class="doc">
 <header class="top">
-  <div><div class="brand">MEND<span>.</span></div><div class="muted small">AI road defect audit · {{ authority }}</div></div>
-  <div class="small muted" style="text-align:right">Work order <b>{{ s.id }}</b><br>Survey: {{ run.name }}<br>Generated {{ generated }}</div>
+  {% include "_brand.j2" %}
+  <div class="meta">Work order {{ s.id }}<br>{{ authority }}<br>Survey: {{ run.name }}<br>Issued {{ generated }}</div>
 </header>
-<h1>Work order {{ s.id }}, Rank #{{ s.rank }}{% if s.street %} · {{ s.street }}{% endif %}</h1>
-<div class="kv">
-  <div>Priority score</div><div><b>{{ s.priority_score }}</b> / 100 (severity score {{ s.severity_score }} × exposure {{ s.exposure }})</div>
-  <div>Location</div><div>{{ "%.6f"|format(s.lat) }}, {{ "%.6f"|format(s.lon) }} · <a href="https://www.openstreetmap.org/?mlat={{ s.lat }}&mlon={{ s.lon }}#map=19/{{ s.lat }}/{{ s.lon }}">open map</a>{% if s.area %} · {{ s.area }}{% endif %}</div>
-  <div>Road class</div><div>{{ s.road_class or "unknown" }}{% if s.road_name and s.road_name != s.street %} ({{ s.road_name }}){% endif %}</div>
-  <div>Nearby (≤150 m)</div><div>{% for p in s.pois[:5] %}{{ p.name }} ({{ p.kind|replace("_"," ") }}, {{ p.distance_m }} m){% if not loop.last %}; {% endif %}{% else %}none recorded{% endfor %}</div>
-</div>
-{% if s.rationale %}<div class="callout"><b>Why this rank.</b> {{ s.rationale }}</div>{% endif %}
-{% if s.voice %}<div class="voice"><b>Field note</b> ({{ s.voice.model }}): “{{ s.voice.transcript }}”{% if s.voice.intent and s.voice.intent.tags %}, tags: {{ s.voice.intent.tags|join(", ") }}{% endif %}</div>{% endif %}
+<h1>Work order {{ s.id }}{% if s.street %}: {{ s.street }}{% endif %}</h1>
+<p class="sub">Priority rank {{ s.rank }} of {{ sites|length }}</p>
+
+<dl class="kv">
+  <dt>Location</dt><dd>{{ "%.6f"|format(s.lat) }}, {{ "%.6f"|format(s.lon) }} (<a href="https://www.openstreetmap.org/?mlat={{ s.lat }}&mlon={{ s.lon }}#map=19/{{ s.lat }}/{{ s.lon }}">map</a>){% if s.area %}, {{ s.area }}{% endif %}</dd>
+  <dt>Road class</dt><dd>{{ s.road_class or "unknown" }}</dd>
+  <dt>Priority score</dt><dd>{{ s.priority_score }} / 100</dd>
+  <dt>Nearby</dt><dd>{% for p in s.pois[:5] if p.distance_m <= 150 %}{{ p.name }} ({{ p.kind|replace("_"," ") }}, {{ p.distance_m }} m){% if not loop.last %}; {% endif %}{% else %}None recorded within 150 m{% endfor %}</dd>
+</dl>
+
+{% if s.rationale %}<h2>Reason for priority</h2><p>{{ s.rationale }}</p>{% endif %}
+{% if s.voice %}<h2>Field note</h2><p>“{{ s.voice.transcript }}”</p>{% endif %}
+
 <h2>Defects</h2>
-<table><tr><th>ID</th><th>Type</th><th>Sev.</th><th class="num">Size</th><th>Position</th><th>Method</th></tr>
+<table><tr><th>ID</th><th>Type</th><th class="num">Severity</th><th class="num">Size</th><th>Position</th></tr>
 {% for did in s.defect_ids %}{% set d = defects[did] %}
-<tr><td><b>{{ d.id }}</b></td><td>{{ d.label }}</td><td><span class="sev sev{{ d.severity }}">{{ d.severity }}</span></td>
-<td class="num">{% if d.area_m2 is not none and d.quantity_key != "length_m" %}{{ "%.2f"|format(d.area_m2) }} m²<br><span class="muted small">{{ "%.2f"|format(d.conf_low) }}–{{ "%.2f"|format(d.conf_high) }}</span>{% elif d.length_m %}{{ "%.1f"|format(d.length_m) }} m<br><span class="muted small">{{ "%.1f"|format(d.conf_low) }}–{{ "%.1f"|format(d.conf_high) }}</span>{% else %}{{ d.size_bucket }} (relative){% endif %}</td>
-<td>{{ d.position|replace("_"," ") }}</td><td class="small">{{ d.method|replace("_"," ") }}</td></tr>
+<tr><td>{{ d.id }}</td><td>{{ d.label }}</td><td class="num">{{ d.severity }} / 5</td>
+<td class="num">{% if d.area_m2 is not none and d.quantity_key != "length_m" %}{{ "%.2f"|format(d.area_m2) }} m²<br><span class="small muted">{{ "%.2f"|format(d.conf_low) }} to {{ "%.2f"|format(d.conf_high) }}</span>{% elif d.length_m %}{{ "%.1f"|format(d.length_m) }} m{% else %}Size {{ d.size_bucket }}{% endif %}</td>
+<td>{{ d.position|replace("_"," ") }}</td></tr>
 {% endfor %}</table>
+
 <h2>Bill of quantities</h2>
 <table><tr><th>Item</th><th>Defect</th><th class="num">Qty</th><th>Unit</th><th class="num">Rate</th><th class="num">Amount</th></tr>
-{% for ln in sb.lines %}<tr><td>{{ ln.description }}<br><span class="muted small">{{ ln.basis }}{% if ln.estimated %} (estimated){% endif %}</span></td><td>{{ ln.defect_id }}</td><td class="num">{{ "%.2f"|format(ln.qty) }}</td><td>{{ ln.unit|replace("m2","m²") }}</td><td class="num">{{ ln.rate|money(sym) }}</td><td class="num">{{ ln.amount|money(sym) }}</td></tr>{% endfor %}
+{% for ln in sb.lines %}<tr><td>{{ ln.description }}<br><span class="small muted">{{ ln.basis }}</span></td><td>{{ ln.defect_id }}</td><td class="num">{{ "%.2f"|format(ln.qty) }}</td><td>{{ ln.unit|replace("m2","m²") }}</td><td class="num">{{ ln.rate|money(sym) }}</td><td class="num">{{ ln.amount|money(sym) }}</td></tr>{% endfor %}
 <tr><td colspan="5">Mobilisation and traffic management</td><td class="num">{{ sb.mobilisation|money(sym) }}</td></tr>
-<tr class="total"><td colspan="5">Site total ({{ boq.currency }})</td><td class="num">{{ sb.total|money(sym) }}</td></tr></table>
-<div class="note">Unit rates are placeholders from config/unit_rates.yaml, replace with the authority's schedule of rates.</div>
+<tr class="total"><td colspan="5">Total ({{ boq.currency }})</td><td class="num">{{ sb.total|money(sym) }}</td></tr></table>
+<p class="small muted">Unit rates are placeholders. Replace them with the authority's schedule of rates.</p>
+
 <h2>Evidence</h2>
 <div class="evidence">
 {% for did in s.defect_ids %}{% set d = defects[did] %}{% if d.evidence_frame %}
-<figure><img src="../{{ d.evidence_frame }}"><figcaption><b>{{ d.id }}</b> {{ d.label }} · frame {{ d.best_frame }} (t={{ d.t }} s) · SAM 3.1 mask{% if d.conf %} conf {{ d.conf }}{% endif %}{% if d.review and d.review.notes %}<br>Review: {{ d.review.notes }}{% endif %}</figcaption></figure>
-<figure><img src="../{{ d.evidence }}"><figcaption><b>{{ d.id }}</b> 2× crop with mask outline · {{ d.n_frames }} frames tracked</figcaption></figure>
+<figure><img src="../{{ d.evidence_frame }}"><figcaption>{{ d.id }}, {{ d.label }}, frame {{ d.best_frame }} ({{ d.t }} s)</figcaption></figure>
+<figure><img src="../{{ d.evidence }}"><figcaption>{{ d.id }}, close-up</figcaption></figure>
 {% endif %}{% endfor %}
 </div>
+
+{% include "_signatures.j2" %}
 </div></body></html>

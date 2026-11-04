@@ -30,7 +30,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-full bg-mist">
-      <header className="max-w-[1200px] mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center border-b hair">
+      <header className="sticky top-0 z-40 bg-mist/95 backdrop-blur w-full px-4 md:px-[max(24px,calc((100%-1200px)/2+24px))] h-14 md:h-16 flex items-center border-b hair">
         <Logo to="/" />
         <nav className="ml-auto flex items-center gap-6 whitespace-nowrap">
           <a href="#how" className="hidden md:inline text-muted hover:text-black">How it works</a>

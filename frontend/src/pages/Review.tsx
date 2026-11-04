@@ -29,6 +29,18 @@ export default function Review() {
   const ev = useEvents(runId, mode, speed, nonce);
   const [ov, setOv] = useState<Overlays | null>(null);
   const [t, setT] = useState(0);
+  const headRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
+  const lastSec = useRef(-1);
+  // playhead moves every frame without re-rendering the page; text updates 4x a second
+  const onTime = (time: number) => {
+    const d = media[0]?.duration_s || 1;
+    const pct = Math.min(100, (time / d) * 100);
+    if (headRef.current) headRef.current.style.transform = `translateX(${pct}cqw)`;
+    if (fillRef.current) fillRef.current.style.width = `${pct}%`;
+    const q = Math.floor(time * 4);
+    if (q !== lastSec.current) { lastSec.current = q; setT(time); }
+  };
   const [playing, setPlaying] = useState(true);
   const stage = useRef<StageHandle>(null);
 
@@ -118,7 +130,7 @@ export default function Review() {
       <section className="order-1 lg:order-none flex flex-col min-h-0 min-w-0">
         <div className="aspect-video lg:aspect-auto lg:flex-1 min-h-0">
           <VideoStage ref={stage} src={fileUrl(runId, m.proxy)} fps={m.fps} width={m.width} height={m.height} getFrame={getFrame} firstSeen={useLive ? ev.firstSeen : undefined} version={useLive ? ev.version : ov ? 1 : 0}
-            onTime={setT} onPick={(key) => { const did = trackToDefect[key]; if (did) setSel({ kind: "defect", id: did }); }} />
+            onTime={onTime} onPick={(key) => { const did = trackToDefect[key]; if (did) setSel({ kind: "defect", id: did }); }} />
         </div>
         {/* timeline */}
         <div className="border-t hair bg-mist px-4 pt-2 pb-3">
@@ -139,6 +151,7 @@ export default function Review() {
           <div className="relative h-14 cursor-pointer" onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); stage.current?.seek(((e.clientX - r.left) / r.width) * dur); }}>
             {/* SAM chunk coverage */}
             <div className="absolute inset-x-0 top-0 h-2 bg-line">
+              <div ref={fillRef} className="absolute inset-y-0 left-0 bg-graphite/60" />
               {Object.values(ev.jobs).map((j, i) => <div key={i} className="absolute h-full" style={{ left: `${(j.start / m.fps / dur) * 100}%`, width: `${((j.end - j.start) / m.fps / dur) * 100}%`, background: j.status === "done" ? "#0f0e12" : j.status === "running" ? "#f0a800" : "transparent", opacity: 0.5 }} />)}
             </div>
             {/* defect tracks */}
@@ -148,7 +161,7 @@ export default function Review() {
                   className="absolute h-[6px] hover:h-[9px]" style={{ left: `${(d.first / m.fps / dur) * 100}%`, width: `${Math.max(0.4, ((d.last - d.first) / m.fps / dur) * 100)}%`, top: `${(i % 5) * 8}px`, background: d.color, outline: sel?.id === d.id ? "1px solid #000" : undefined }} />
               ))}
             </div>
-            <div className="absolute top-0 bottom-0 w-px bg-black" style={{ left: `${(t / dur) * 100}%` }} />
+            <div className="absolute inset-0 pointer-events-none" style={{ containerType: "inline-size" }}><div ref={headRef} className="absolute top-0 bottom-0 left-0 w-[2px] -ml-px bg-black will-change-transform" /></div>
           </div>
         </div>
       </section>
@@ -160,7 +173,7 @@ export default function Review() {
           <Stat label="Defects" value={live.length} />
           <Stat label="Damage" value={`${area.toFixed(1)} m²`} />
           <Stat label="Est. cost" value={fmtMoney(cost, boq?.symbol)} />
-          <Stat label="Severe 4–5" value={severe} />
+          <Stat label="Severe" value={severe} />
         </div>
         <div className="flex-1 min-h-0">
           {sel ? <div className="hidden lg:block h-full"><Inspector onSeek={(tt) => stage.current?.seek(Math.max(0, tt - 0.5))} /></div> : (

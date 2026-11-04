@@ -48,6 +48,6 @@ export function sizeText(d: Defect): string {
 export function rangeText(d: Defect): string {
   if (d.conf_low == null || d.conf_high == null) return "no metric size";
   const u = d.quantity_key === "length_m" ? "m" : "m²";
-  return `${d.conf_low.toFixed(2)}–${d.conf_high.toFixed(2)} ${u}`;
+  return `${d.conf_low.toFixed(2)} to ${d.conf_high.toFixed(2)} ${u}`;
 }
 export const fmtTime = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
