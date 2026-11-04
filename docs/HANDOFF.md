@@ -10,6 +10,12 @@ Read first: `README.md`, `docs/hackathon_page.md` (rules and judging), `DESIGN.m
 - Speed: a 1-minute clip processes in about 1.5 to 2 minutes; Ask answers in 3 to 8 s.
 - One survey on the live site: "Zaria" (portrait clip found online). SAM 3.1 found no potholes on that worn gravel road; only one "standing water" mask on the verge. Not good demo material, and its licence is unknown.
 
+## Update (Nov 4, evening)
+- Demo survey: "bolonge" (`20261104-160433-bolonge`), drawn route in Samaru, 37 defects, 5 sites. An older copy `20261104-143311-bolonge` is still in R2 and the survey list; delete it from `/app` if you want.
+- Demo video rendered with Remotion (`video/`) and live at https://mend.harunafaruk.com/download/mend-demo.mp4. Rebuild: `cd video && node rec/scenes.js s2 ... s8`, `python3 scripts/build_scenes.py`, `npx remotion render src/index.ts Mend out/mend-demo.mp4 --browser-executable=<chrome-headless-shell>`.
+- Fixes today: horizon estimates above 0.15 of the frame were rejected (sizes were 10 to 100 times too big); drawn routes were overwritten on reprocessing; Overpass now POST with mirrors (public servers were timing out, so road class and POIs are unknown on bolonge); voice notes return after re-ranking and rebuild PDFs in the background; Ask renders bold and bullets.
+- Unit rate for pothole patching on bolonge was set to 95 during recording (Work orders, "Reset to defaults" to undo).
+
 ## What is left
 1. **Demo footage**: own recording (or Creative Commons with attribution), landscape, daylight, clear potholes on tarmac, 1 to 2 minutes. Upload via `/app` or record via `/capture`. Rules require footage we own or may use.
 2. Optional quality upgrade: Muse Spark marks rough boxes around potholes, SAM 3.1 refines them with box prompts (`meta_sam_parser.build_object_prompt`). Helps on worn roads where text prompts find nothing.
