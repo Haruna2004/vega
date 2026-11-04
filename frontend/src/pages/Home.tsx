@@ -35,8 +35,7 @@ export default function Home() {
     <div className="min-h-full">
       <header className="h-12 flex items-center gap-4 px-6 border-b hair">
         <Logo />
-        <span className="text-muted">AI road defect audit</span>
-        <SimBadge provider={health?.provider} />
+                <SimBadge provider={health?.provider} />
         <Link to="/capture" className="ml-auto btn flex items-center gap-1.5"><Smartphone size={12} /> Capture on phone</Link>
       </header>
       <div className="max-w-[1200px] mx-auto px-6 py-10 grid grid-cols-[1fr_420px] gap-10">
@@ -64,8 +63,7 @@ export default function Home() {
               className={`block border border-dashed ${drag ? "border-black bg-mist" : "border-graphite"} p-6 text-center cursor-pointer`}>
               <Upload size={18} className="mx-auto mb-2" />
               <div>Drop road video or photos</div>
-              <div className="text-[11px] text-muted mt-1">.mp4 .mov .jpg .heic · optional .gpx / .csv route</div>
-              <input type="file" multiple className="hidden" accept="video/*,image/*,.gpx,.csv" onChange={(e) => setFiles([...files, ...Array.from(e.target.files || [])])} />
+                            <input type="file" multiple className="hidden" accept="video/*,image/*,.gpx,.csv" onChange={(e) => setFiles([...files, ...Array.from(e.target.files || [])])} />
             </label>
             {files.length > 0 && <div className="text-[12px] space-y-0.5">{files.map((f, i) => <div key={i} className="flex justify-between"><span className="truncate">{f.name}</span><span className="num text-muted">{(f.size / 1e6).toFixed(1)} MB</span></div>)}</div>}
             <label className="block"><div className="label mb-1">Name</div><input className="w-full" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Zaria Road, Kano" /></label>
@@ -79,8 +77,7 @@ export default function Home() {
             </div>
             {err && <div className="text-sev5 text-[12px]">{err}</div>}
             <button className="btn btn-solid w-full py-2.5" disabled={!files.length || busy} onClick={start}>{busy ? `Uploading… ${Math.round(prog * 100)}%` : "Start survey"}</button>
-            <div className="text-[11px] text-muted">No GPS in the footage? You can draw the route on the map afterwards.</div>
-          </div>
+                      </div>
         </section>
       </div>
     </div>

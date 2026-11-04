@@ -123,8 +123,7 @@ export default function MapPage() {
           <div className="label">Road condition</div>
           <div className="flex gap-1">{[1, 2, 3, 4, 5].map((n) => <div key={n} className="flex-1 h-2" style={{ background: SEV[n] }} />)}</div>
           <div className="flex justify-between text-[10px] text-muted"><span>minor</span><span>severe</span></div>
-          <div className="text-[11px] text-muted">Route coloured by worst defect per 20 m. Markers sized by priority; top 10 pulse.</div>
-          {(needsRoute || drawing) && (
+                    {(needsRoute || drawing) && (
             <div className="pt-2 border-t hair space-y-2">
               <div className="text-[12px]">{drawing ? `${drawing.length} points. Click along the road you drove, start → end.` : "This footage has no GPS. Draw the route you drove."}</div>
               {!drawing ? <button className="btn btn-solid w-full" onClick={() => setDrawing([])}>Draw route</button> : (

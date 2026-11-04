@@ -102,8 +102,7 @@ export default function Review() {
                   {!useLive && dt !== undefined && <span className="num ml-auto text-[11px] text-muted">{dt < 1 ? "<1s" : `${dt.toFixed(0)}s`}</span>}
                   {p && st === "running" && <span className="num ml-auto text-[11px]">{p.done}/{p.total}</span>}
                 </div>
-                <div className="text-[11px] text-muted ml-5">{sub}</div>
-                {p && st === "running" && <div className="ml-5 mt-1 h-[2px] bg-line"><div className="h-full bg-black transition-all" style={{ width: `${(100 * p.done) / Math.max(1, p.total)}%` }} /></div>}
+                                {p && st === "running" && <div className="ml-5 mt-1 h-[2px] bg-line"><div className="h-full bg-black transition-all" style={{ width: `${(100 * p.done) / Math.max(1, p.total)}%` }} /></div>}
               </div>
             );
           })}
@@ -111,7 +110,7 @@ export default function Review() {
         <div className="px-4 h-9 flex items-center border-b hair label">Log</div>
         <div className="flex-1 overflow-y-auto px-4 py-2 num text-[10.5px] leading-relaxed text-muted flex flex-col-reverse">
           <div>{(useLive ? ev.log : []).map((l, i) => <div key={i} className={l.level === "error" ? "text-sev5" : l.level === "warn" ? "text-black" : ""}>{l.t?.toFixed(1).padStart(6)} {l.text}</div>)}</div>
-          {!useLive && <div>Run finished. Press “Replay processing” to watch it again.</div>}
+          
         </div>
       </aside>
 
@@ -126,7 +125,7 @@ export default function Review() {
           <div className="flex items-center gap-3 mb-2">
             <button onClick={toggle} className="btn px-2 py-1">{playing ? <Pause size={12} /> : <Play size={12} />}</button>
             <span className="num">{fmtTime(t)} / {fmtTime(dur)}</span>
-            <span className="text-[11px] text-muted">space play · J/K next/prev defect · click a mask</span>
+            
             <div className="ml-auto flex items-center gap-2">
               {meta?.status === "done" && (
                 <>
@@ -159,7 +158,7 @@ export default function Review() {
         <div className="grid grid-cols-2 gap-4 p-4 border-b hair">
           <Stat label="Defects" value={live.length} />
           <Stat label="Damage" value={`${area.toFixed(1)} m²`} />
-          <Stat label="Est. cost" value={fmtMoney(cost, boq?.symbol)} sub="placeholder rates" />
+          <Stat label="Est. cost" value={fmtMoney(cost, boq?.symbol)} />
           <Stat label="Severe 4–5" value={severe} />
         </div>
         <div className="flex-1 min-h-0">
@@ -172,7 +171,7 @@ export default function Review() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2"><Sev n={d.severity} /><span className="num">{d.id}</span><Swatch color={d.color} /><span className="truncate">{d.label}</span></div>
                     <div className="num text-[12px] mt-1">{sizeText(d)}</div>
-                    <div className="text-[11px] text-muted">{fmtTime(d.t)} into the drive</div>
+                    <div className="num text-[11px] text-muted">{fmtTime(d.t)}</div>
                   </div>
                 </button>
               ))}

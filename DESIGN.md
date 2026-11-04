@@ -1,3 +1,8 @@
+# MEND UI rules (project notes)
+- This is a dashboard, not a landing page: borrow TE's palette, type, hairlines and 0px radius; structure like ops tools (top bar, tabs, workspace, right inspector).
+- **Avoid unnecessary secondary labels and descriptions. Let the layout do the explaining.**
+- Colour only for defects and severity. Video and map sit on carbon (#0f0e12) panels.
+
 # teenage engineering — Style Reference
 > industrial catalogue under studio light — the product is the only rich object on the page and everything else is whispered around it
 

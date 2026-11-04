@@ -32,8 +32,7 @@ export default function Ask() {
         {msgs.length === 0 && (
           <div className="pt-10">
             <div className="text-[40px] h-light leading-[1.1]">Ask the roads.</div>
-            <div className="text-muted mt-2">Muse Spark answers from this survey's data through tools, and cites defect and site ids.</div>
-            <div className="mt-6 grid grid-cols-2 gap-px bg-line border hair">{SUGGEST.map((s) => <button key={s} onClick={() => ask(s)} className="bg-mist hover:bg-white text-left p-3">{s}</button>)}</div>
+                        <div className="mt-6 grid grid-cols-2 gap-px bg-line border hair">{SUGGEST.map((s) => <button key={s} onClick={() => ask(s)} className="bg-mist hover:bg-white text-left p-3">{s}</button>)}</div>
           </div>
         )}
         {msgs.map((m, i) => (
