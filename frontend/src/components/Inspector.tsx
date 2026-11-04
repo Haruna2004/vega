@@ -5,6 +5,13 @@ import { fileUrl, fmtMoney, rangeText, sizeText } from "../lib/api";
 import { DefectLine, Sev, Swatch, Tip } from "./ui";
 import VoiceNote from "./VoiceNote";
 
+/** Phone: the inspector opens as a full-screen sheet over the page. */
+export function MobileSheet({ onSeek }: { onSeek?: (t: number) => void }) {
+  const { sel } = useRunCtx();
+  if (!sel) return null;
+  return <div className="lg:hidden fixed inset-0 z-50 bg-mist overflow-y-auto"><Inspector onSeek={onSeek} /></div>;
+}
+
 export default function Inspector({ onSeek }: { onSeek?: (t: number) => void }) {
   const { sel, setSel, defects, sites, runId, boq, reload } = useRunCtx();
   const [raw, setRaw] = useState(false);

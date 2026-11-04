@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowUp, Wrench } from "lucide-react";
 import { useRunCtx } from "./RunLayout";
+import { MobileSheet } from "../components/Inspector";
 import { fileUrl, fmtMoney, send } from "../lib/api";
 
 type Msg = { role: "user" | "assistant"; content: string; steps?: any[] };
@@ -27,12 +28,13 @@ export default function Ask() {
   const linkify = (text: string) => text.split(/(\b[DS]\d{2,3}\b)/g).map((p, i) => /^[DS]\d{2,3}$/.test(p) ? <button key={i} className="num text-link" onClick={() => setSel({ kind: p[0] === "D" ? "defect" : "site", id: p })}>{p}</button> : p);
 
   return (
-    <div className="h-full flex flex-col max-w-[920px] mx-auto w-full">
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+    <div className="h-full min-h-[80vh] flex flex-col max-w-[920px] mx-auto w-full">
+      <MobileSheet />
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6">
         {msgs.length === 0 && (
           <div className="pt-10">
-            <div className="text-[40px] h-light leading-[1.1]">Ask the roads.</div>
-                        <div className="mt-6 grid grid-cols-2 gap-px bg-line border hair">{SUGGEST.map((s) => <button key={s} onClick={() => ask(s)} className="bg-mist hover:bg-white text-left p-3">{s}</button>)}</div>
+            <div className="text-[30px] sm:text-[40px] h-light leading-[1.1]">Ask the roads.</div>
+                        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-px bg-line border hair">{SUGGEST.map((s) => <button key={s} onClick={() => ask(s)} className="bg-mist hover:bg-white text-left p-3">{s}</button>)}</div>
           </div>
         )}
         {msgs.map((m, i) => (

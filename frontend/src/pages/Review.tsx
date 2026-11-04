@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, Circle, Loader2, Pause, Play, RotateCcw, X } from "lucide-react";
 import { useRunCtx } from "./RunLayout";
 import VideoStage, { StageHandle } from "../components/VideoStage";
-import Inspector from "../components/Inspector";
+import Inspector, { MobileSheet } from "../components/Inspector";
 import { Entry, useEvents } from "../lib/events";
 import { Overlays, data, fileUrl, fmtMoney, fmtTime, sizeText } from "../lib/api";
 import { Sev, Stat, Swatch } from "../components/ui";
@@ -81,9 +81,9 @@ export default function Review() {
   const dur = m.duration_s || 1;
 
   return (
-    <div className="h-full grid grid-cols-[280px_1fr_380px]">
+    <div className="lg:h-full flex flex-col lg:grid lg:grid-cols-[280px_1fr_380px]">
       {/* pipeline */}
-      <aside className="border-r hair flex flex-col min-h-0">
+      <aside className="order-3 lg:order-none border-t lg:border-t-0 lg:border-r hair flex flex-col min-h-0">
         <div className="px-4 h-10 flex items-center justify-between border-b hair">
           <span className="label">Pipeline</span>
           {meta?.processing_s && !useLive && <span className="num text-[11px] text-muted">{fmtTime(meta.processing_s)} total</span>}
@@ -115,8 +115,8 @@ export default function Review() {
       </aside>
 
       {/* video */}
-      <section className="flex flex-col min-h-0 min-w-0">
-        <div className="flex-1 min-h-0">
+      <section className="order-1 lg:order-none flex flex-col min-h-0 min-w-0">
+        <div className="aspect-video lg:aspect-auto lg:flex-1 min-h-0">
           <VideoStage ref={stage} src={fileUrl(runId, m.proxy)} fps={m.fps} width={m.width} height={m.height} getFrame={getFrame} firstSeen={useLive ? ev.firstSeen : undefined} version={useLive ? ev.version : ov ? 1 : 0}
             onTime={setT} onPick={(key) => { const did = trackToDefect[key]; if (did) setSel({ kind: "defect", id: did }); }} />
         </div>
@@ -154,15 +154,16 @@ export default function Review() {
       </section>
 
       {/* counters + feed / inspector */}
-      <aside className="border-l hair flex flex-col min-h-0">
-        <div className="grid grid-cols-2 gap-4 p-4 border-b hair">
+      <aside className="order-2 lg:order-none border-t lg:border-t-0 lg:border-l hair flex flex-col min-h-0">
+        <MobileSheet onSeek={(tt) => stage.current?.seek(Math.max(0, tt - 0.5))} />
+        <div className="grid grid-cols-4 lg:grid-cols-2 gap-3 lg:gap-4 p-4 border-b hair">
           <Stat label="Defects" value={live.length} />
           <Stat label="Damage" value={`${area.toFixed(1)} m²`} />
           <Stat label="Est. cost" value={fmtMoney(cost, boq?.symbol)} />
           <Stat label="Severe 4–5" value={severe} />
         </div>
         <div className="flex-1 min-h-0">
-          {sel ? <Inspector onSeek={(tt) => stage.current?.seek(Math.max(0, tt - 0.5))} /> : (
+          {sel ? <div className="hidden lg:block h-full"><Inspector onSeek={(tt) => stage.current?.seek(Math.max(0, tt - 0.5))} /></div> : (
             <div className="h-full overflow-y-auto">
               <div className="px-4 h-9 flex items-center label border-b hair">{useLive ? "Found so far" : "Defects in this drive"}</div>
               {live.map((d: any) => (

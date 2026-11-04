@@ -1,15 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import { useRunCtx } from "./RunLayout";
-import Inspector from "../components/Inspector";
+import Inspector, { MobileSheet } from "../components/Inspector";
 import { SEV, send } from "../lib/api";
 import { Sev } from "../components/ui";
 
-const STYLE: any = {
-  version: 8,
-  sources: { base: { type: "raster", tiles: ["a", "b", "c", "d"].map((s) => `https://${s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png`), tileSize: 256, attribution: "© OpenStreetMap contributors © CARTO" } },
-  layers: [{ id: "base", type: "raster", source: "base", paint: { "raster-saturation": -0.6, "raster-brightness-max": 0.9 } }],
-};
+const STYLE = "https://tiles.openfreemap.org/styles/dark"; // OpenFreeMap: free, no key (OSM data)
 
 function haversine(a: number[], b: number[]) {
   const R = 6371008, r = Math.PI / 180;
@@ -25,6 +21,7 @@ export default function MapPage() {
   const markers = useRef<maplibregl.Marker[]>([]);
   const [drawing, setDrawing] = useState<number[][] | null>(null);
   const [saving, setSaving] = useState(false);
+  const [ready, setReady] = useState(false);
 
   const routeLines = useMemo(() => Object.values(route || {}).map((r: any) => (r.points || []).map((p: any) => [p.lon, p.lat])).filter((l: any) => l.length > 1), [route]);
   const needsRoute = media.length > 0 && routeLines.length === 0 && sites.length === 0;
@@ -58,8 +55,9 @@ export default function MapPage() {
     if (!el.current || map.current) return;
     const m = new maplibregl.Map({ container: el.current, style: STYLE, center: [7.49, 9.06], zoom: 13, attributionControl: { compact: true } });
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+    m.on("load", () => setReady(true));
     map.current = m;
-    return () => { m.remove(); map.current = null; };
+    return () => { m.remove(); map.current = null; setReady(false); };
   }, []);
 
   useEffect(() => {
@@ -90,8 +88,8 @@ export default function MapPage() {
         m.fitBounds(b, { padding: 80, maxZoom: 17, duration: 600 });
       }
     };
-    if (m.isStyleLoaded()) apply(); else m.once("load", apply);
-  }, [segments, sites, defects]);
+    if (ready) apply();
+  }, [segments, sites, defects, ready]);
 
   // route drawing
   useEffect(() => {
@@ -103,7 +101,7 @@ export default function MapPage() {
     const data: any = { type: "Feature", geometry: { type: "LineString", coordinates: drawing } };
     const src = m.getSource("draw") as maplibregl.GeoJSONSource | undefined;
     if (src) src.setData(data);
-    else if (m.isStyleLoaded()) { m.addSource("draw", { type: "geojson", data }); m.addLayer({ id: "draw", type: "line", source: "draw", paint: { "line-color": "#f0a800", "line-width": 3, "line-dasharray": [2, 1] } }); }
+    else if (ready) { m.addSource("draw", { type: "geojson", data }); m.addLayer({ id: "draw", type: "line", source: "draw", paint: { "line-color": "#f0a800", "line-width": 3, "line-dasharray": [2, 1] } }); }
     return () => { m.off("click", onClick); m.getCanvas().style.cursor = ""; };
   }, [drawing]);
 
@@ -116,10 +114,11 @@ export default function MapPage() {
   }
 
   return (
-    <div className="h-full grid grid-cols-[1fr_380px]">
-      <div className="relative bg-carbon">
-        <div ref={el} className="absolute inset-0" />
-        <div className="absolute left-4 top-4 bg-mist/95 border hair p-3 w-64 space-y-2">
+    <div className="lg:h-full flex flex-col lg:grid lg:grid-cols-[1fr_380px]">
+      <MobileSheet />
+      <div className="relative bg-carbon h-[62vh] lg:h-auto">
+        <div ref={el} style={{ position: "absolute", inset: 0 }} />
+        <div className="absolute left-2 top-2 lg:left-4 lg:top-4 bg-mist/95 border hair p-3 w-52 lg:w-64 space-y-2">
           <div className="label">Road condition</div>
           <div className="flex gap-1">{[1, 2, 3, 4, 5].map((n) => <div key={n} className="flex-1 h-2" style={{ background: SEV[n] }} />)}</div>
           <div className="flex justify-between text-[10px] text-muted"><span>minor</span><span>severe</span></div>
@@ -134,8 +133,9 @@ export default function MapPage() {
           {!needsRoute && !drawing && <button className="text-link text-[11px]" onClick={() => setDrawing([])}>Redraw route</button>}
         </div>
       </div>
-      <aside className="border-l hair min-h-0 flex flex-col">
-        {sel ? <Inspector /> : (
+      <aside className="lg:border-l hair min-h-0 flex flex-col">
+        {sel ? <div className="hidden lg:block h-full"><Inspector /></div> : null}
+        {(!sel || true) && (<div className={sel ? "lg:hidden" : ""}>
           <div className="overflow-y-auto">
             <div className="px-4 h-10 flex items-center label border-b hair">Sites by priority</div>
             {sites.map((s) => (
@@ -150,7 +150,7 @@ export default function MapPage() {
               </button>
             ))}
           </div>
-        )}
+        </div>)}
       </aside>
     </div>
   );

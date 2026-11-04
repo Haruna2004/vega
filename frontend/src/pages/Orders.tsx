@@ -48,8 +48,8 @@ export default function Orders() {
   const used = useMemo(() => new Set(boq?.lines.map((l) => l.treatment)), [boq]);
 
   return (
-    <div className="h-full grid grid-cols-[300px_1fr_340px]">
-      <aside className="border-r hair overflow-y-auto">
+    <div className="lg:h-full flex flex-col lg:grid lg:grid-cols-[300px_1fr_340px]">
+      <aside className="lg:border-r hair overflow-y-auto max-h-[40vh] lg:max-h-none">
         <div className="px-4 h-10 flex items-center label border-b hair">Documents</div>
         {docs.map((d) => {
           const s = sites.find((x) => x.id === d.site_id);
@@ -62,8 +62,8 @@ export default function Orders() {
           );
         })}
       </aside>
-      <section className="flex flex-col min-h-0 bg-line">
-        <div className="h-10 bg-mist border-b hair flex items-center gap-2 px-4">
+      <section className="flex flex-col min-h-0 bg-line h-[75vh] lg:h-auto border-t lg:border-t-0 hair">
+        <div className="min-h-10 py-1.5 bg-mist border-b hair flex flex-wrap items-center gap-2 px-4">
           <span className="label">{doc?.kind === "tender" ? "Request for quotation" : "Work order"}</span>
           {saving && <span className="text-[11px] text-amber">updating…</span>}
           <div className="ml-auto flex gap-2">
@@ -74,7 +74,7 @@ export default function Orders() {
         </div>
         {doc && <iframe key={doc.id + stamp} src={fileUrl(runId, doc.html) + `?v=${stamp}`} className="flex-1 w-full bg-white" />}
       </section>
-      <aside className="border-l hair overflow-y-auto">
+      <aside className="lg:border-l hair overflow-y-auto border-t lg:border-t-0">
         <div className="p-4 border-b hair">
           <div className="label">Estimated total</div>
           <div className="num text-[40px] h-light leading-none mt-1">{fmtMoney(liveTotal, rates?.currency_symbol ?? boq?.symbol)}</div>

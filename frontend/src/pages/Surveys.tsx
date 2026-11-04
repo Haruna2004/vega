@@ -33,15 +33,15 @@ export default function Surveys() {
 
   return (
     <div className="min-h-full">
-      <header className="h-12 flex items-center gap-4 px-6 border-b hair">
+      <header className="h-12 flex items-center gap-4 px-4 sm:px-6 border-b hair">
         <Logo />
-        <nav className="flex gap-4 ml-6"><span className="border-b-2 border-black py-3">Surveys</span><Link to="/" className="text-muted hover:text-black py-3">About</Link></nav>
+        <nav className="hidden sm:flex gap-4 ml-6"><span className="border-b-2 border-black py-3">Surveys</span><Link to="/" className="text-muted hover:text-black py-3">About</Link></nav>
                 <SimBadge provider={health?.provider} />
         <Link to="/capture" className="ml-auto btn flex items-center gap-1.5"><Smartphone size={12} /> Capture on phone</Link>
       </header>
-      <div className="max-w-[1400px] mx-auto px-6 py-8 grid grid-cols-[1fr_400px] gap-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
         <section>
-          <div className="flex items-end justify-between mb-6">
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
             <div className="text-[26px] h-light">Surveys</div>
             <div className="flex gap-8">
               <div><div className="label">Surveys</div><div className="num text-[19px]">{runs.length}</div></div>
@@ -56,14 +56,14 @@ export default function Surveys() {
               <Link key={r.id} to={`/app/runs/${r.id}/review`} className="flex items-center gap-4 py-3 border-b hair hover:bg-white px-2">
                 <span className="w-2 h-2" style={{ background: r.status === "done" ? "#0f0e12" : r.status === "running" ? "#f0a800" : "#f43f5e" }} />
                 <span className="flex-1 truncate">{r.name}</span>
-                <span className="num text-muted text-[12px]">{new Date(r.created_at * 1000).toLocaleDateString()}</span>
-                <span className="num w-24 text-right">{r.summary?.defects ?? "-"} defects</span>
-                <span className="num w-28 text-right">{fmtMoney(r.summary?.total_cost, r.summary?.symbol)}</span>
+                <span className="num text-muted text-[12px] hidden sm:inline">{new Date(r.created_at * 1000).toLocaleDateString()}</span>
+                <span className="num w-20 sm:w-24 text-right hidden sm:inline">{r.summary?.defects ?? "-"} defects</span>
+                <span className="num w-24 sm:w-28 text-right">{fmtMoney(r.summary?.total_cost, r.summary?.symbol)}</span>
               </Link>
             ))}
           </div>
         </section>
-        <section className="border hair bg-white">
+        <section className="border hair bg-white order-first lg:order-none">
           <div className="px-5 h-11 flex items-center border-b hair label">New survey</div>
           <div className="p-5 space-y-4">
             <label onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={(e) => { e.preventDefault(); setDrag(false); setFiles([...files, ...Array.from(e.dataTransfer.files)]); }}
