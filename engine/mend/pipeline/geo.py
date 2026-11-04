@@ -9,6 +9,7 @@ query over the whole route. All lookups are cached; offline = cache only.
 
 from __future__ import annotations
 
+import logging
 import math
 import time
 from collections import defaultdict
@@ -50,10 +51,14 @@ def _http_get_json(kind: str, url: str, params: dict, *, offline: bool, timeout:
         return None
     s = get_settings()
     try:
-        r = httpx.get(url, params=params, headers={"User-Agent": s.user_agent}, timeout=timeout)
+        if kind == "overpass":  # Overpass prefers POST for long queries
+            r = httpx.post(url, data=params, headers={"User-Agent": s.user_agent}, timeout=timeout)
+        else:
+            r = httpx.get(url, params=params, headers={"User-Agent": s.user_agent}, timeout=timeout)
         r.raise_for_status()
         data = r.json()
-    except Exception:
+    except Exception as exc:
+        logging.getLogger("mend.geo").warning("%s request to %s failed: %r", kind, url, exc)
         return None
     cache.put(kind, key, {"url": url, "params": params, "response": data, "created_at": time.time()})
     return data
