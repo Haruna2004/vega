@@ -87,7 +87,12 @@ def write_index() -> None:
     from .store import Run
 
     try:
-        put_json("index.json", Run.list())
+        # merge with the index in R2: a fresh Cloud Run instance only has some runs on disk
+        remote = json.loads(get_bytes("index.json") or b"[]")
+        local = {r["id"]: r for r in Run.list()}
+        merged = list(local.values()) + [r for r in remote if r["id"] not in local]
+        merged.sort(key=lambda r: r.get("created_at") or 0, reverse=True)
+        put_json("index.json", merged)
     except Exception as exc:
         log.warning("index sync failed: %s", exc)
 

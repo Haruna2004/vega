@@ -6,6 +6,6 @@
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "mend-data" }],
   "routes": [{ "pattern": "mend.harunafaruk.com", "custom_domain": true }],
   "workers_dev": true,
-  "vars": { "ENGINE_URL": "" }
+  "vars": { "ENGINE_URL": "https://mend-engine-382417406825.europe-west1.run.app" }
   // secret: ENGINE_KEY (shared with the engine on Cloud Run)
 }
