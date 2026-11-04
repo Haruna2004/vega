@@ -1,4 +1,4 @@
-"""Stage 1 — ingest: probe media, build a constant-frame-rate proxy, chunk it for
+"""Stage 1, ingest: probe media, build a constant-frame-rate proxy, chunk it for
 SAM, sample frames for triage, and resolve GPS."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Stage 3 — SAM 3.1 segmentation and tracking.
+"""Stage 3, SAM 3.1 segmentation and tracking.
 
 One Responses API call per (video chunk, concept prompt). SAM returns per-frame
 boxes + masks with object ids that are stable inside the call, i.e. tracks.

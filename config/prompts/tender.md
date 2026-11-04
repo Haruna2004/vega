@@ -6,3 +6,5 @@ Write concise, contract-style prose in plain English. Use Markdown paragraphs an
 short lists where natural. Assume generic good practice (e.g. saw-cut patch edges,
 tack coat, compaction, crack routing and sealant) unless the data says otherwise.
 Mention that unit rates are placeholders to be replaced by the authority's schedule.
+
+Style: never use em dashes or en dashes; use commas, colons or full stops.

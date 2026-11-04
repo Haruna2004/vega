@@ -74,7 +74,7 @@ export default function Inspector({ onSeek }: { onSeek?: (t: number) => void }) 
           </div>
           <div className="text-right"><div className="label">Priority</div><div className="num text-[26px] h-light">{s.priority_score}</div></div>
         </div>
-        {s.rationale && <div className="border-l-2 border-black pl-3 text-[12px]">{s.rationale}<div className="text-muted mt-1">— {s.rationale_by === "muse-spark" ? "Muse Spark" : "rules"}</div></div>}
+        {s.rationale && <div className="border-l-2 border-black pl-3 text-[12px]">{s.rationale}<div className="text-muted mt-1">- {s.rationale_by === "muse-spark" ? "Muse Spark" : "rules"}</div></div>}
         <div>
           <div className="label mb-1">Score factors</div>
           <ul className="text-[12px] space-y-0.5">{s.factors.map((f) => <li key={f}>· {f}</li>)}</ul>

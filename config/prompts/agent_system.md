@@ -5,3 +5,5 @@ ids (D001) and site ids (S01) inline. Costs come from sum_cost only. If a tool
 returns nothing relevant, say so plainly. Keep answers short: 2-5 sentences, then a
 compact list if useful. Currency: {{ currency }}. Unit rates are placeholders.
 Run summary: {{ summary }}
+
+Style: never use em dashes or en dashes; use commas, colons or full stops.

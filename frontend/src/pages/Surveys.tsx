@@ -5,7 +5,7 @@ import { Logo, SimBadge } from "../components/ui";
 import { fmtMoney, get } from "../lib/api";
 import { startRun } from "../lib/upload";
 
-export default function Home() {
+export default function Surveys() {
   const nav = useNavigate();
   const [runs, setRuns] = useState<any[]>([]);
   const [health, setHealth] = useState<any>(null);
@@ -26,7 +26,7 @@ export default function Home() {
     setBusy(true); setErr("");
     try {
       const id = await startRun(files.map((x) => ({ blob: x, name: x.name })), { name: name || files[0]?.name.replace(/\.[^.]+$/, "") || "Road survey", calibration: { preset, ...(height ? { height_m: +height } : {}) }, currency, max_seconds: maxSec ? +maxSec : null }, setProg);
-      nav(`/runs/${id}/review`);
+      nav(`/app/runs/${id}/review`);
     }
     catch (e: any) { setErr(e.message); setBusy(false); }
   }
@@ -35,22 +35,29 @@ export default function Home() {
     <div className="min-h-full">
       <header className="h-12 flex items-center gap-4 px-6 border-b hair">
         <Logo />
+        <nav className="flex gap-4 ml-6"><span className="border-b-2 border-black py-3">Surveys</span><Link to="/" className="text-muted hover:text-black py-3">About</Link></nav>
                 <SimBadge provider={health?.provider} />
         <Link to="/capture" className="ml-auto btn flex items-center gap-1.5"><Smartphone size={12} /> Capture on phone</Link>
       </header>
-      <div className="max-w-[1200px] mx-auto px-6 py-10 grid grid-cols-[1fr_420px] gap-10">
+      <div className="max-w-[1400px] mx-auto px-6 py-8 grid grid-cols-[1fr_400px] gap-8">
         <section>
-          <div className="text-[40px] h-light leading-[1.1]">Drive a road. Get a costed,<br />evidence-backed repair plan.</div>
-          <div className="text-muted mt-3 max-w-[560px] text-[14px] font-light">SAM 3.1 finds and tracks every pothole and crack pixel by pixel. MEND measures each one, maps it, ranks repairs by risk to people, and writes the work orders and tender. Powered by Muse Spark, SAM 3.1 and Muse Voice Transcribe.</div>
-          <div className="mt-10 label mb-2">Surveys</div>
+          <div className="flex items-end justify-between mb-6">
+            <div className="text-[26px] h-light">Surveys</div>
+            <div className="flex gap-8">
+              <div><div className="label">Surveys</div><div className="num text-[19px]">{runs.length}</div></div>
+              <div><div className="label">Defects</div><div className="num text-[19px]">{runs.reduce((a, r) => a + (r.summary?.defects ?? 0), 0)}</div></div>
+              <div><div className="label">Repair estimate</div><div className="num text-[19px]">{fmtMoney(runs.reduce((a, r) => a + (r.summary?.total_cost ?? 0), 0))}</div></div>
+            </div>
+          </div>
+          
           <div className="border-t hair">
             {runs.length === 0 && <div className="py-6 text-muted">No surveys yet.</div>}
             {runs.map((r) => (
-              <Link key={r.id} to={`/runs/${r.id}/review`} className="flex items-center gap-4 py-3 border-b hair hover:bg-white px-2">
+              <Link key={r.id} to={`/app/runs/${r.id}/review`} className="flex items-center gap-4 py-3 border-b hair hover:bg-white px-2">
                 <span className="w-2 h-2" style={{ background: r.status === "done" ? "#0f0e12" : r.status === "running" ? "#f0a800" : "#f43f5e" }} />
                 <span className="flex-1 truncate">{r.name}</span>
                 <span className="num text-muted text-[12px]">{new Date(r.created_at * 1000).toLocaleDateString()}</span>
-                <span className="num w-24 text-right">{r.summary?.defects ?? "—"} defects</span>
+                <span className="num w-24 text-right">{r.summary?.defects ?? "-"} defects</span>
                 <span className="num w-28 text-right">{fmtMoney(r.summary?.total_cost, r.summary?.symbol)}</span>
               </Link>
             ))}
@@ -68,7 +75,7 @@ export default function Home() {
             {files.length > 0 && <div className="text-[12px] space-y-0.5">{files.map((f, i) => <div key={i} className="flex justify-between"><span className="truncate">{f.name}</span><span className="num text-muted">{(f.size / 1e6).toFixed(1)} MB</span></div>)}</div>}
             <label className="block"><div className="label mb-1">Name</div><input className="w-full" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Zaria Road, Kano" /></label>
             <label className="block"><div className="label mb-1">Camera</div>
-              <select className="w-full" value={preset} onChange={(e) => setPreset(e.target.value)}>{cfg && Object.entries(cfg.camera_presets).map(([k, v]: any) => <option key={k} value={k}>{v.label} — {v.height_m} m, {v.hfov_deg}°</option>)}</select>
+              <select className="w-full" value={preset} onChange={(e) => setPreset(e.target.value)}>{cfg && Object.entries(cfg.camera_presets).map(([k, v]: any) => <option key={k} value={k}>{v.label}, {v.height_m} m, {v.hfov_deg}°</option>)}</select>
             </label>
             <div className="grid grid-cols-3 gap-2">
               <label><div className="label mb-1">Height (m)</div><input className="w-full num" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="preset" /></label>

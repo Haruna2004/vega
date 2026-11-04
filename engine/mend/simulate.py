@@ -1,4 +1,4 @@
-"""SIMULATED Meta models — used only when no API key is configured.
+"""SIMULATED Meta models, used only when no API key is configured.
 
 >>> THIS IS THE ONLY PLACE WHERE AI IS SIMULATED. <<<
 Switch: env MEND_PROVIDER=meta (real) | simulate. Default: `meta` when
@@ -202,7 +202,7 @@ class SimulatedMetaClient:
             return {"choices": [{"message": {"role": "assistant", "content": "", "tool_calls": [{"id": f"call_{i}", "type": "function", "function": {"name": n, "arguments": json.dumps(a)}} for i, (n, a) in enumerate(calls)]}}]}
         results = [json.loads(m["content"]) for m in messages if m["role"] == "tool"]
         ids = sorted(set(re.findall(r'"(D\d{3}|S\d{2})"', json.dumps(results))))[:12]
-        return {"choices": [{"message": {"role": "assistant", "content": f"[simulated answer — no language model] Tool results cover {', '.join(ids) or 'no items'}. See the table below."}}]}
+        return {"choices": [{"message": {"role": "assistant", "content": f"[simulated answer, no language model] Tool results cover {', '.join(ids) or 'no items'}. See the table below."}}]}
 
     def transcribe(self, audio_path, **kwargs) -> dict:
         return {"text": "[simulated transcript] Kids cross here every morning on the way to school.", "model": "simulated", "transport": "simulate", "simulated": True}

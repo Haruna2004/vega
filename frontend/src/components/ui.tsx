@@ -2,9 +2,9 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Defect, SEV } from "../lib/api";
 
-export function Logo({ dark = false }: { dark?: boolean }) {
+export function Logo({ dark = false, to = "/app" }: { dark?: boolean; to?: string }) {
   return (
-    <Link to="/" className="flex items-center gap-2 select-none">
+    <Link to={to} className="flex items-center gap-2 select-none">
       <svg width="18" height="18" viewBox="0 0 32 32"><rect width="32" height="32" fill={dark ? "#f6f8f7" : "#0f0e12"} /><path d="M6 24V8l10 10L26 8v16" fill="none" stroke={dark ? "#0f0e12" : "#f6f8f7"} strokeWidth="2.5" /><rect x="22" y="21" width="4" height="4" fill="#f0a800" /></svg>
       <span className="h-light text-[17px] tracking-[0.18em]">MEND</span>
     </Link>

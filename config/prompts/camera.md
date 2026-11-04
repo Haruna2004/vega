@@ -9,3 +9,5 @@ Return:
 - fisheye: true if straight lines are visibly curved (wide-angle distortion).
 - confidence: low | medium | high.
 - notes: one short sentence.
+
+Style: never use em dashes or en dashes; use commas, colons or full stops.

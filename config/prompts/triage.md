@@ -9,3 +9,5 @@ Rules
   a later pixel-level segmentation step will verify them.
 - "notes": max 20 words, concrete (e.g. "two potholes in left wheel path, wet patch near kerb").
 - Return one entry per frame, using the frame index given in the text.
+
+Style: never use em dashes or en dashes; use commas, colons or full stops.

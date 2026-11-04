@@ -191,5 +191,6 @@ def ask(run: Run, question: str, history: list[dict] | None = None) -> dict:
         answer = answer or "I could not finish within the tool-call budget."
     import re
 
+    answer = answer.replace("\u2014", ", ").replace("\u2013", "-")
     cited = sorted(set(re.findall(r"\b[DS]\d{2,3}\b", answer)))
     return {"question": question, "answer": answer, "steps": steps, "cited": cited}

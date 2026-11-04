@@ -1,4 +1,4 @@
-"""Stage 4 — measure each tracked defect in metres and grade its severity.
+"""Stage 4, measure each tracked defect in metres and grade its severity.
 
 Measurement (best available first)
   1. camera_model: pinhole camera over a flat road. Camera height + horizontal FOV

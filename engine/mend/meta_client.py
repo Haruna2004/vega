@@ -175,7 +175,7 @@ def _estimate_cost(model: str, usage: dict | None) -> float:
 
 
 def _strip_json(text: str) -> Any:
-    text = text.strip()
+    text = text.strip().replace("\u2014", ", ").replace("\u2013", "-")  # house style: no em/en dashes
     fence = re.match(r"^```(?:json)?\s*(.*?)\s*```$", text, re.S)
     if fence:
         text = fence.group(1)
@@ -289,7 +289,7 @@ class MetaClient:
             hint = {"role": "system", "content": "Reply with one JSON object only, matching this JSON schema:\n" + json.dumps(schema)}
             data = self.spark_chat([hint, *messages], model=model, response_format={"type": "json_object"}, reasoning_effort=reasoning_effort, tag=tag)
         content = data["choices"][0]["message"].get("content") or ""
-        return _strip_json(content)
+        return _strip_json(content.replace("—", ", "))
 
     # ---------------------------------------------------------------- Files
     def upload_file(self, path: str | Path, purpose: str = "user_data") -> str:

@@ -9,3 +9,5 @@ that changes how urgently the site should be repaired.
   users (children, pedestrians crossing), accidents, or heavy traffic; below 1.0 only if
   the note says the site is rarely used.
 - urgency: low | normal | high | immediate.
+
+Style: never use em dashes or en dashes; use commas, colons or full stops.

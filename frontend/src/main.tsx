@@ -4,7 +4,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import "./index.css";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
+import Landing from "./pages/Landing";
+import Surveys from "./pages/Surveys";
 import Capture from "./pages/Capture";
 import RunLayout from "./pages/RunLayout";
 import Review from "./pages/Review";
@@ -16,9 +17,10 @@ import Ask from "./pages/Ask";
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Landing />} />
+      <Route path="/app" element={<Surveys />} />
       <Route path="/capture" element={<Capture />} />
-      <Route path="/runs/:runId" element={<RunLayout />}>
+      <Route path="/app/runs/:runId" element={<RunLayout />}>
         <Route index element={<Navigate to="review" replace />} />
         <Route path="review" element={<Review />} />
         <Route path="map" element={<MapPage />} />

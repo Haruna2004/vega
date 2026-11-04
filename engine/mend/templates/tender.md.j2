@@ -1,4 +1,4 @@
-# Request for Quotation — Road defect repairs
+# Request for Quotation: Road defect repairs
 
 {{ authority }} · Survey: {{ run.name }} · generated {{ generated }}
 
@@ -16,7 +16,7 @@
 
 | Rank | Site | Location | Defects | Priority | Site total |
 |---|---|---|---|---:|---:|
-{% for s in sites %}{% if boq.sites[s.id] and boq.sites[s.id].lines %}| #{{ s.rank }} | {{ s.id }} | {{ s.street or "—" }} ({{ "%.5f"|format(s.lat) }}, {{ "%.5f"|format(s.lon) }}) | {% for did in s.defect_ids %}{{ did }} (sev {{ defects[did].severity }}){% if not loop.last %}, {% endif %}{% endfor %} | {{ s.priority_score }} | {{ boq.sites[s.id].total|money(sym) }} |
+{% for s in sites %}{% if boq.sites[s.id] and boq.sites[s.id].lines %}| #{{ s.rank }} | {{ s.id }} | {{ s.street or "-" }} ({{ "%.5f"|format(s.lat) }}, {{ "%.5f"|format(s.lon) }}) | {% for did in s.defect_ids %}{{ did }} (sev {{ defects[did].severity }}){% if not loop.last %}, {% endif %}{% endfor %} | {{ s.priority_score }} | {{ boq.sites[s.id].total|money(sym) }} |
 {% endif %}{% endfor %}
 ## 3. Bill of quantities ({{ boq.currency }})
 
@@ -41,7 +41,7 @@ _Unit rates are placeholders (config/unit_rates.yaml), not market prices._
 
 {{ sections.safety_and_traffic_management }}
 
-## Appendix A — Evidence
+## Appendix A: Evidence
 
 {{ sections.evidence_note }}
 {% for s in sites %}{% for did in s.defect_ids %}{% set d = defects[did] %}{% if d.evidence_frame %}

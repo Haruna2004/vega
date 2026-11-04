@@ -1,4 +1,4 @@
-"""Stage 8 — annotated MP4 per video: SAM masks, outlines, labels, HUD."""
+"""Stage 8, annotated MP4 per video: SAM masks, outlines, labels, HUD."""
 
 from __future__ import annotations
 

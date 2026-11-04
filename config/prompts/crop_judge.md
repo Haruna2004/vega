@@ -13,3 +13,5 @@ For EACH defect id, judge from the pixels:
   concept, size, depth, and whether it sits in a wheel path.
 - notes: max 25 words of evidence you can actually see.
 Be honest about uncertainty; do not invent details you cannot see.
+
+Style: never use em dashes or en dashes; use commas, colons or full stops.

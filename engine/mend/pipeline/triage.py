@@ -1,4 +1,4 @@
-"""Stage 2 — triage with Muse Spark: which SAM prompts to run on which chunk.
+"""Stage 2, triage with Muse Spark: which SAM prompts to run on which chunk.
 
 Frames sampled every `MEND_TRIAGE_EVERY_S` are sent in batches (several images per
 request) with a strict JSON schema. The union of flagged concepts per chunk, plus

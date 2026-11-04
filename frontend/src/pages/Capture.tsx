@@ -75,7 +75,7 @@ export default function Capture() {
     }
     photos.forEach((p, i) => files.push({ blob: p.blob, name: `photo_${String(i).padStart(3, "0")}.jpg` }));
     const route = !clip && photos.some((p) => p.fix) ? photos.map((p) => ({ lat: p.fix?.lat ?? 0, lon: p.fix?.lon ?? 0 })) : null;
-    try { const id = await startRun(files, { name: `Phone capture ${new Date().toLocaleString()}`, calibration: { preset: "phone_dashboard" }, route }); nav(`/runs/${id}/review`); }
+    try { const id = await startRun(files, { name: `Phone capture ${new Date().toLocaleString()}`, calibration: { preset: "phone_dashboard" }, route }); nav(`/app/runs/${id}/review`); }
     catch (e: any) { setErr(e.message); setBusy(false); }
   }
 

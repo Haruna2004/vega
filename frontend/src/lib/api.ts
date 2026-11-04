@@ -39,11 +39,11 @@ export const fileUrl = (runId: string, path?: string | null) => (path ? `${API}/
 export const data = <T = any>(runId: string, name: string) => get<T>(`/api/runs/${runId}/data/${name}`);
 
 export const SEV = ["", "#38bdf8", "#2dd4bf", "#facc15", "#fb923c", "#f43f5e"];
-export const fmtMoney = (v: number | undefined, sym = "$") => (v === undefined || v === null ? "—" : `${sym}${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`);
+export const fmtMoney = (v: number | undefined, sym = "$") => (v === undefined || v === null ? "-" : `${sym}${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`);
 export function sizeText(d: Defect): string {
   if (d.area_m2 != null && d.quantity_key !== "length_m") return `${d.area_m2.toFixed(2)} m²`;
   if (d.length_m != null) return `${d.length_m.toFixed(1)} m`;
-  return d.size_bucket ? `size ${d.size_bucket}` : "—";
+  return d.size_bucket ? `size ${d.size_bucket}` : "-";
 }
 export function rangeText(d: Defect): string {
   if (d.conf_low == null || d.conf_high == null) return "no metric size";

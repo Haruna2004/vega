@@ -1,9 +1,9 @@
-{% set s = site %}{% set sb = site_boq %}# Work order {{ s.id }} — Rank #{{ s.rank }}{% if s.street %} · {{ s.street }}{% endif %}
+{% set s = site %}{% set sb = site_boq %}# Work order {{ s.id }}, Rank #{{ s.rank }}{% if s.street %} · {{ s.street }}{% endif %}
 
 Survey: {{ run.name }} · {{ authority }} · generated {{ generated }}
 
 - Priority score: **{{ s.priority_score }}** / 100 (severity score {{ s.severity_score }} × exposure {{ s.exposure }})
-- Location: {{ "%.6f"|format(s.lat) }}, {{ "%.6f"|format(s.lon) }} — https://www.openstreetmap.org/?mlat={{ s.lat }}&mlon={{ s.lon }}#map=19/{{ s.lat }}/{{ s.lon }}
+- Location: {{ "%.6f"|format(s.lat) }}, {{ "%.6f"|format(s.lon) }}, https://www.openstreetmap.org/?mlat={{ s.lat }}&mlon={{ s.lon }}#map=19/{{ s.lat }}/{{ s.lon }}
 - Road class: {{ s.road_class or "unknown" }}
 - Nearby (≤150 m): {% for p in s.pois[:5] %}{{ p.name }} ({{ p.kind|replace("_"," ") }}, {{ p.distance_m }} m){% if not loop.last %}; {% endif %}{% else %}none recorded{% endfor %}
 {% if s.rationale %}
@@ -21,7 +21,7 @@ Survey: {{ run.name }} · {{ authority }} · generated {{ generated }}
 
 | Item | Defect | Qty | Unit | Rate | Amount |
 |---|---|---:|---|---:|---:|
-{% for ln in sb.lines %}| {{ ln.description }} — {{ ln.basis }} | {{ ln.defect_id }} | {{ "%.2f"|format(ln.qty) }} | {{ ln.unit }} | {{ ln.rate|money(sym) }} | {{ ln.amount|money(sym) }} |
+{% for ln in sb.lines %}| {{ ln.description }}, {{ ln.basis }} | {{ ln.defect_id }} | {{ "%.2f"|format(ln.qty) }} | {{ ln.unit }} | {{ ln.rate|money(sym) }} | {{ ln.amount|money(sym) }} |
 {% endfor %}| Mobilisation and traffic management | | | | | {{ sb.mobilisation|money(sym) }} |
 | **Site total** | | | | | **{{ sb.total|money(sym) }}** |
 

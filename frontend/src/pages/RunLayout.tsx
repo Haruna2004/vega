@@ -36,7 +36,7 @@ export default function RunLayout() {
         </nav>
         <div className="ml-auto flex items-center gap-5 text-[12px]">
           {s && <span className="num">{s.defects} defects · {s.area_m2} m² · {fmtMoney(s.total_cost, s.symbol)}</span>}
-          <a className="btn" href="/">All surveys</a>
+          <a className="btn" href="/app">All surveys</a>
         </div>
       </header>
       <main className="flex-1 min-h-0">

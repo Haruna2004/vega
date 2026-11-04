@@ -48,7 +48,7 @@ export default function Defects() {
                     <td className="px-3 num text-muted text-[11px]">{rangeText(d)}</td>
                     <td className="px-3">{d.position.replace("_", " ")}</td>
                     <td className="px-3 num">{d.n_frames} fr</td>
-                    <td className="px-3 num">{d.site_id ?? "—"}</td>
+                    <td className="px-3 num">{d.site_id ?? "-"}</td>
                     <td className="px-3 num">{d.t.toFixed(1)}s</td>
                     <td className="px-3 text-[11px] text-muted max-w-[260px] truncate">{d.review?.notes}</td>
                   </tr>

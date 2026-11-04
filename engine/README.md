@@ -1,4 +1,4 @@
-# engine/ — processing (Python, runs on Google Cloud Run)
+# engine/, processing (Python, runs on Google Cloud Run)
 
 Video pipeline: ingest → triage (Muse Spark) → SAM segmentation/tracking →
 measure → geo → prioritize → report → render. Reads inputs from and writes

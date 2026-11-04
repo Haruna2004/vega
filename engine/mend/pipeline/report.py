@@ -1,4 +1,4 @@
-"""Stage 7 — bill of quantities, per-site work orders and the tender (RFQ).
+"""Stage 7, bill of quantities, per-site work orders and the tender (RFQ).
 
 Every number comes from code with the defect id it derives from; Muse Spark only
 writes prose sections around the tables. Output: Markdown + HTML (+ PDF when a

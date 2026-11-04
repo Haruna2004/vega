@@ -1,4 +1,4 @@
-"""Stage 5 — geolocate defects, cluster them into sites, enrich from OpenStreetMap.
+"""Stage 5, geolocate defects, cluster them into sites, enrich from OpenStreetMap.
 
 Each defect gets the camera position at its best frame, pushed forward by the
 measured ground distance and sideways by the lateral offset (when the route

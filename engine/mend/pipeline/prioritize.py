@@ -1,4 +1,4 @@
-"""Stage 6 — rank sites: priority = severity score x exposure.
+"""Stage 6, rank sites: priority = severity score x exposure.
 
 severity score: worst defect severity plus a share of the others (a site with one
 severity-5 pothole and three cracks outranks a lone severity-5 pothole).
