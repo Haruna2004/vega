@@ -110,7 +110,6 @@ export default function Landing() {
             <div className={`md:col-span-4 ${i % 2 ? "md:order-2" : ""}`}>
               <div className="flex items-center gap-3">
                 <span className="num text-muted">{s.n}</span>
-                <span className="h-px w-8 bg-amber" />
                 <span className="label">{s.model}</span>
               </div>
               <h2 className="text-[24px] md:text-[30px] h-light mt-4 leading-[1.15]">{s.title}</h2>
