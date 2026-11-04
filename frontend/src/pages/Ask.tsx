@@ -25,7 +25,9 @@ export default function Ask() {
     }
     setBusy(false);
   }
-  const linkify = (text: string) => text.split(/(\b[DS]\d{2,3}\b)/g).map((p, i) => /^[DS]\d{2,3}$/.test(p) ? <button key={i} className="num text-link" onClick={() => setSel({ kind: p[0] === "D" ? "defect" : "site", id: p })}>{p}</button> : p);
+  const ids = (text: string) => text.split(/(\b[DS]\d{2,3}\b)/g).map((p, i) => /^[DS]\d{2,3}$/.test(p) ? <button key={i} className="num text-link" onClick={() => setSel({ kind: p[0] === "D" ? "defect" : "site", id: p })}>{p}</button> : p);
+  // light markdown: **bold** and "* " bullets, ids become links
+  const linkify = (text: string) => text.replace(/^\s*[*-] /gm, "• ").split(/(\*\*[^*]+\*\*)/g).map((p, i) => /^\*\*[^*]+\*\*$/.test(p) ? <strong key={i} className="font-semibold">{ids(p.slice(2, -2))}</strong> : <span key={i}>{ids(p)}</span>);
 
   return (
     <div className="h-full min-h-[80vh] flex flex-col max-w-[920px] mx-auto w-full">

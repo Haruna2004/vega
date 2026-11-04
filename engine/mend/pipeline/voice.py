@@ -99,8 +99,21 @@ def add_voice_note(run: Run, target_kind: str, target_id: str, audio_path: Path 
             run.write("defects", list(defects.values()))
         run.write("sites", sites)
         prioritize(run, with_rationale=True)
-        if rebuild_docs:
-            build_documents(run, pdf=True)
+        if rebuild_docs:  # PDFs take ~20 s; rebuild them after replying so the note feels instant
+            import contextvars
+            import threading
+
+            from .. import r2sync
+
+            def _docs():
+                try:
+                    build_documents(run, pdf=True)
+                    r2sync.sync_run(run)
+                except Exception as exc:
+                    run.log(f"Document rebuild after voice note failed: {exc}", level="warn")
+
+            ctx = contextvars.copy_context()
+            threading.Thread(target=lambda: ctx.run(_docs), daemon=True).start()
     sites = run.read("sites", [])
     new = next((s for s in sites if s["id"] == site_id), None)
     run.emit("voice_note", note=note, old_rank=old_rank, new_rank=(new or {}).get("rank"))
