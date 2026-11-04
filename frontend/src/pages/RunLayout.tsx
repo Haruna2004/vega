@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useOutletContext, useParams } from "react-router-dom";
 import { useState } from "react";
-import { Logo, SimBadge } from "../components/ui";
+import { Logo } from "../components/ui";
 import { useRun, RunData } from "../lib/useRun";
 import { fmtMoney } from "../lib/api";
 
@@ -22,7 +22,6 @@ export default function RunLayout() {
         <Logo />
         <div className="text-muted hidden sm:block">/</div>
         <div className="truncate max-w-[180px] sm:max-w-[320px] h-12 lg:h-auto flex items-center">{run.meta?.name ?? runId}</div>
-        <SimBadge provider={run.meta?.provider} />
         {run.meta?.status === "running" && <span className="text-[11px] uppercase tracking-widest text-amber">● processing</span>}
         {run.meta?.status === "failed" && <span className="text-[11px] uppercase tracking-widest text-sev5">failed</span>}
         <nav className="order-last lg:order-none w-full lg:w-auto flex h-11 lg:h-full lg:ml-4 overflow-x-auto -mx-4 px-1 lg:mx-0 lg:px-0 border-t hair lg:border-t-0">

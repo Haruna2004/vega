@@ -29,11 +29,6 @@ export function Stat({ label, value, sub }: { label: string; value: ReactNode; s
   );
 }
 
-export function SimBadge({ provider }: { provider?: string }) {
-  if (provider !== "simulate") return null;
-  return <span className="text-[10px] tracking-widest uppercase bg-amber text-black px-1.5 py-0.5" title="No Meta API key configured: AI outputs come from engine/mend/simulate.py">Simulated AI</span>;
-}
-
 export function Empty({ children }: { children: ReactNode }) {
   return <div className="p-10 text-muted">{children}</div>;
 }

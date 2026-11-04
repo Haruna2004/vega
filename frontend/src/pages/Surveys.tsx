@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Smartphone, Upload } from "lucide-react";
-import { Logo, SimBadge } from "../components/ui";
+import { Logo } from "../components/ui";
 import { fmtMoney, get } from "../lib/api";
 import { startRun } from "../lib/upload";
 
@@ -36,7 +36,6 @@ export default function Surveys() {
       <header className="h-12 flex items-center gap-4 px-4 sm:px-6 border-b hair">
         <Logo />
         <nav className="hidden sm:flex gap-4 ml-6"><span className="border-b-2 border-black py-3">Surveys</span><Link to="/" className="text-muted hover:text-black py-3">About</Link></nav>
-                <SimBadge provider={health?.provider} />
         <Link to="/capture" className="ml-auto btn flex items-center gap-1.5"><Smartphone size={12} /> Capture on phone</Link>
       </header>
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">

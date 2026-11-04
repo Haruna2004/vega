@@ -64,9 +64,7 @@ def _run(run_id: str) -> Run:
 @app.get("/api/health")
 def health() -> dict:
     s = get_settings()
-    from .simulate import provider_name
-
-    return {"ok": True, "provider": provider_name(), "offline": s.offline, "has_key": s.has_key, "models": {"spark": s.spark_model, "sam": s.sam_model, "asr": s.asr_model}, "time": time.time()}
+    return {"ok": True, "offline": s.offline, "has_key": s.has_key, "models": {"spark": s.spark_model, "sam": s.sam_model, "asr": s.asr_model}, "time": time.time()}
 
 
 @app.get("/api/config")

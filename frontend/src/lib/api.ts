@@ -7,7 +7,7 @@ export type Defect = {
   quantity_key?: string; size_bucket?: string; method: string; method_detail: string; position: string;
   lateral_m: number | null; distance_m: number | null; best_frame: number; t: number; first: number; last: number;
   n_frames: number; conf: number | null; evidence?: string; evidence_frame?: string; evidence_raw?: string;
-  review?: { is_defect: boolean; depth: string; edge_condition: string; severity: number; notes: string; simulated?: boolean };
+  review?: { is_defect: boolean; depth: string; edge_condition: string; severity: number; notes: string };
   dismissed: boolean; lat?: number; lon?: number; partial?: boolean; notes?: { voice_id: string; transcript: string }[];
 };
 export type Poi = { kind: string; name: string; distance_m: number; lat: number; lon: number };

@@ -591,13 +591,10 @@ def _pcm_to_wav(pcm: bytes, rate: int = 16000) -> bytes:
 _client: MetaClient | None = None
 
 
-def get_client():
-    """THE switch between real Meta models and the simulation (see simulate.py)."""
+def get_client() -> MetaClient:
     global _client
     if _client is None:
-        from .simulate import SimulatedMetaClient, provider_name
-
-        _client = SimulatedMetaClient() if provider_name() == "simulate" else MetaClient()
+        _client = MetaClient()
     return _client
 
 
