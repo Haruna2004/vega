@@ -2,7 +2,7 @@
   "name": "mend",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "../frontend/dist", "binding": "ASSETS", "not_found_handling": "single-page-application", "run_worker_first": ["/api/*", "/internal/*"] },
+  "assets": { "directory": "../frontend/dist", "binding": "ASSETS", "not_found_handling": "single-page-application", "run_worker_first": ["/api/*", "/internal/*", "/download/*"] },
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "mend-data" }],
   "routes": [{ "pattern": "mend.harunafaruk.com", "custom_domain": true }],
   "workers_dev": true,

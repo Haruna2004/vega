@@ -29,3 +29,24 @@ Read first: `README.md`, `docs/hackathon_page.md` (rules and judging), `DESIGN.m
 
 ## Submission form fields to draft
 Team name · Track (Indie) · Problem statement (Build for Your World, or Push the Frontier) · Project description · Public GitHub repo · 3-minute video link · Use of Meta products · Why Meta's models are important · optional X post link.
+
+## Making the demo video (agent instructions)
+
+Goal: a finished 1080p MP4 under 3:00 that shows the real product working, with voiceover, captions and light motion design in the MEND style (`DESIGN.md`: mist #f6f8f7, ink, carbon #0f0e12, hairlines, amber #f0a800 accent, 0px radius, Inter, no em dashes).
+
+Secrets (set by Haruna as environment variables, never committed):
+- `META_MODEL_API_KEY` (Meta models), `GEMINI_API_KEY` (voiceover), `MEND_ENGINE_KEY` (lets this session read and write R2 through the Worker).
+- `MEND_ENGINE_KEY` is a value Haruna chooses. Make the deployment use it: in `api/` run `wrangler secret put ENGINE_KEY` with that value, and update the Cloud Run env var `MEND_ENGINE_KEY` to the same value (`gcloud run services update mend-engine --region europe-west1 --update-env-vars MEND_ENGINE_KEY=...`, project `mend-road-audit-1104`; gcloud needs `env -u CLOUDSDK_AUTH_ACCESS_TOKEN` and a `gcloud auth login --no-launch-browser` first).
+
+Inputs
+- Demo survey: Haruna uploads his own 60 to 90 s landscape road clip through https://mend.harunafaruk.com/app (processing takes about 2 minutes). Use that survey in every scene; `/api/runs` lists survey ids.
+- Raw clip for the opening shot: `runs/<id>/proxy_m0.mp4` from R2 (`GET /internal/r2/runs/<id>/proxy_m0.mp4` with header `x-mend-key`), or the original in `runs/<id>/inputs/`.
+
+Steps
+1. Write the script (timed scenes, about 420 words max) and get Haruna's approval before recording.
+2. Record each scene from the live site with Playwright at 1920x1080 (`recordVideo`), scripted clicks, slow readable cursor moves. Launch Chromium with `proxy: { server: process.env.HTTPS_PROXY }` and args `--use-angle=swiftshader --enable-unsafe-swiftshader`, otherwise the map is blank. For the processing scene use Review → "Replay processing" at 4x on the finished survey (real logged events, sped up).
+3. Voiceover per scene with Gemini text-to-speech (check the current TTS model name and voices in Google's docs). Measure each clip and fit scene lengths to it.
+4. Edit with Remotion in a `video/` folder: title card, scene recordings, captions timed to the voice, zooms on SAM masks, lower thirds ("SAM 3.1 tracking", "Muse Spark review", "Muse Voice Transcribe"), end card with https://mend.harunafaruk.com and the repo URL. Music optional, royalty-free only, quiet under the voice.
+5. Render the MP4; check it is under 3:00, audio is clear, captions readable.
+6. Deliver: upload to R2 key `downloads/mend-demo.mp4` (`PUT https://mend.harunafaruk.com/internal/r2/downloads/mend-demo.mp4` with header `x-mend-key`). Download link: https://mend.harunafaruk.com/download/mend-demo.mp4. Keep large render files out of git.
+7. Draft the submission form answers in `docs/submission.md` in Haruna's voice: plain sentences, no em dashes.

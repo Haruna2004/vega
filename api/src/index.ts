@@ -75,6 +75,9 @@ export default {
       return serveObject(env, req, key);
     }
 
+    // public downloads (e.g. the rendered demo video): R2 prefix downloads/
+    if (req.method === "GET" && p.startsWith("/download/")) return serveObject(env, req, `downloads/${decodeURIComponent(p.slice("/download/".length))}`);
+
     if (!p.startsWith("/api/")) return env.ASSETS.fetch(req);
 
     // ---- read-only results straight from R2 ----
