@@ -119,8 +119,8 @@ def hydrate_run(run_id: str, root: Path, full: bool = False) -> bool:
 
     def fetch(k):
         dst = root / k["key"][len("runs/") :]
-        if dst.exists() and dst.stat().st_size == k["size"]:
-            return
+        if dst.exists() and (dst.stat().st_size == k["size"] or _sent.get(k["key"]) != dst.stat().st_mtime):
+            return  # same file, or changed locally since the last sync (e.g. a route just drawn): keep it
         data = get_bytes(k["key"])
         if data is None:
             return

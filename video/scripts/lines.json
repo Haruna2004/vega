@@ -1,0 +1,11 @@
+{
+"s1": "Every city has a list of roads to fix. Almost none of them know how big the holes are, which ones are dangerous, or what it will cost. Someone has to walk the road with a tape measure.",
+"s2": "MEND turns one drive into a repair plan. Film the road with a phone or a dashcam, upload it, and a few minutes later you have measured defects, ranked sites and work orders ready to sign.",
+"s3": "Muse Spark looks at sampled frames and plans the scan. SAM 3.1 then outlines every pothole and tracks it through the video. A camera model projects each mask onto the road, so every defect gets a size in square metres, with an honest range.",
+"s4": "Click any defect to see why it is there. Here is the size, the range, and the reasons behind its severity. Muse Spark reviewed the close-up crop and confirmed it is a real pothole with crumbling edges, not a shadow or a puddle.",
+"s5": "On the map, the road is coloured by condition. Defects close together become repair sites, ranked by risk to people. Severity matters, and so does what is nearby. Schools, clinics and bus stops come from OpenStreetMap.",
+"s6": "Inspectors know things a camera cannot see. Record a voice note, and Muse Voice Transcribe turns it into text. Muse Spark reads it and adjusts the ranking. This site just moved up.",
+"s7": "Then the paperwork. Work orders and a bill of quantities are built from the measurements. Change a unit rate, and every total updates. Download a plain document with signature lines, ready for a contractor.",
+"s8": "And you can just ask. Muse Spark answers from the survey itself, and cites the exact sites and defects, so every number can be checked.",
+"s9": "MEND. One drive, a repair plan you can act on. Built on Meta's models, and live today."
+}

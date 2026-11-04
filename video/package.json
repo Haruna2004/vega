@@ -1,0 +1,15 @@
+{
+  "name": "mend-video",
+  "private": true,
+  "scripts": {
+    "render": "remotion render src/index.ts Mend out/mend-demo.mp4 --codec h264 --crf 20"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.380",
+    "@types/react": "^18.3.12",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.380",
+    "typescript": "^5.6.3"
+  }
+}
