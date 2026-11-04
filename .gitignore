@@ -21,3 +21,4 @@ frontend/next-env.d.ts
 .DS_Store
 api/node_modules/
 api/.wrangler/
+frontend/dist/
