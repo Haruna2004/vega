@@ -40,8 +40,8 @@ def _cache() -> DiskCache:
     return DiskCache(get_settings().cache_dir)
 
 
-def _http_get_json(kind: str, url: str, params: dict, *, offline: bool) -> dict | list | None:
-    key = request_key(kind, {"url": url, "params": params})
+def _http_get_json(kind: str, url: str, params: dict, *, offline: bool, timeout: float = 20) -> dict | list | None:
+    key = request_key(kind, {"params": params} if kind == "overpass" else {"url": url, "params": params})
     cache = _cache()
     hit = cache.get(kind, key)
     if hit is not None:
@@ -50,7 +50,7 @@ def _http_get_json(kind: str, url: str, params: dict, *, offline: bool) -> dict 
         return None
     s = get_settings()
     try:
-        r = httpx.get(url, params=params, headers={"User-Agent": s.user_agent}, timeout=20)
+        r = httpx.get(url, params=params, headers={"User-Agent": s.user_agent}, timeout=timeout)
         r.raise_for_status()
         data = r.json()
     except Exception:
@@ -82,8 +82,11 @@ def overpass(bbox: tuple[float, float, float, float], offline: bool) -> dict | N
   node["public_transport"="platform"]({b});
 );
 out tags center geom;"""
-    data = _http_get_json("overpass", s.overpass_url, {"data": q}, offline=offline)
-    return data if isinstance(data, dict) else None
+    for url in dict.fromkeys([s.overpass_url, "https://overpass.kumi.systems/api/interpreter", "https://overpass.private.coffee/api/interpreter"]):
+        data = _http_get_json("overpass", url, {"data": q}, offline=offline, timeout=60)
+        if isinstance(data, dict) and data.get("elements") is not None:
+            return data
+    return None
 
 
 def _point_seg_dist_m(lat, lon, a, b) -> float:
