@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Logo } from "../components/ui";
 
@@ -54,6 +55,14 @@ function Shot({ s, eager }: { s: Step; eager?: boolean }) {
 }
 
 export default function Landing() {
+  // iOS rubber-band scrolling shows the page background past the ends: light above the header, dark below the footer
+  useEffect(() => {
+    const html = document.documentElement, body = document.body;
+    const prev = [html.style.overscrollBehaviorY, body.style.background];
+    html.style.overscrollBehaviorY = "none";
+    body.style.background = "linear-gradient(to bottom, #f6f8f7 50%, #0f0e12 50%)";
+    return () => { html.style.overscrollBehaviorY = prev[0]; body.style.background = prev[1]; };
+  }, []);
   return (
     <div className="min-h-full bg-mist">
       <header className="sticky top-0 z-40 bg-mist/95 backdrop-blur w-full px-4 md:px-[max(24px,calc((100%-1200px)/2+24px))] h-14 md:h-16 flex items-center border-b hair">
