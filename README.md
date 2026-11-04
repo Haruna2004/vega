@@ -41,3 +41,13 @@ Process a video from the command line: `python -m mend run path/to/drive.mp4 --n
 
 - Unit rates in `config/unit_rates.yaml` are placeholders, not market prices.
 - Every Meta API response is cached by content hash, so re-running a survey costs nothing.
+
+## Known limits
+
+- **Sizes are estimates.** Area comes from a single camera and an assumed camera height and field of view, so each defect shows a range, not one exact number. Sizes have not yet been checked against tape measurements on site.
+- **Defects cut off by the frame edge are lower bounds.** If a pothole runs out of the picture, MEND can only measure the part it sees.
+- **Worn and unpaved roads are harder.** SAM 3.1 text prompts find less on low-contrast gravel than on tarmac.
+- **No GPS means a drawn route.** Footage without GPS needs the route drawn on the map, and positions along it assume a steady speed. The demo survey "bolonge" uses a drawn route.
+- **Nearby places depend on OpenStreetMap.** When the public Overpass servers are busy, road class and nearby schools, clinics and bus stops show as unknown, and ranking falls back to severity and inspector notes.
+- **Unit rates are placeholders.** Costs show the method, not real market prices. Rates can be edited per survey.
+- **Speed.** A one-minute clip takes a few minutes to process, and a voice note takes up to about a minute to transcribe and re-rank. The engine scales to zero, so the first request after a quiet period is slower.
