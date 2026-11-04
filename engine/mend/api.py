@@ -328,12 +328,14 @@ def export_csv(run_id: str) -> Response:
     return PlainTextResponse(buf.getvalue(), media_type="text/csv", headers={"Content-Disposition": f'attachment; filename="{run_id}-defects.csv"'})
 
 
-# ---------------------------------------------------------------- frontend
-FRONTEND = REPO_ROOT / "frontend" / "out"
+# ---------------------------------------------------------------- frontend (SPA)
+FRONTEND = REPO_ROOT / "frontend" / "dist"
 if FRONTEND.exists():
-    app.mount("/", StaticFiles(directory=str(FRONTEND), html=True), name="frontend")
-else:
+    app.mount("/assets", StaticFiles(directory=str(FRONTEND / "assets")), name="assets")
 
-    @app.get("/")
-    def root() -> dict:
-        return {"mend": "API is running. Build the UI with `make frontend` (or run `npm run dev` in frontend/)."}
+    @app.get("/{path:path}")
+    def spa(path: str):
+        f = (FRONTEND / path).resolve()
+        if path and str(f).startswith(str(FRONTEND.resolve())) and f.is_file():
+            return FileResponse(f)
+        return FileResponse(FRONTEND / "index.html")

@@ -465,7 +465,7 @@ def measure(run: Run) -> dict:
         else:
             d["severity"] = sev_rule
             d["dismissed"] = False
-        run.emit("defect", defect={k: d.get(k) for k in ("id", "track_id", "media_id", "concept", "label", "color", "severity", "area_m2", "length_m", "conf_low", "conf_high", "method", "size_bucket", "position", "evidence", "t", "best_frame", "dismissed")})
+        run.emit("defect", defect={k: d.get(k) for k in ("id", "track_id", "media_id", "concept", "label", "color", "severity", "area_m2", "length_m", "quantity_key", "conf_low", "conf_high", "method", "size_bucket", "position", "evidence", "t", "best_frame", "dismissed")})
 
     run.write("defects", defects)
     from .segment import write_overlays

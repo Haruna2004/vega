@@ -131,7 +131,7 @@ def triage(run: Run) -> dict:
             triaged.extend(res)
             done += len(b)
             for r in res:
-                run.emit("triage_frame", frame_id=r["frame_id"], media_id=r["media_id"], frame=r["frame"], t=r["t"], concepts=r["defect_concepts"], road_visible=r["road_visible"], notes=r.get("notes"), path=r["path"])
+                run.emit("triage_frame", frame_id=r["frame_id"], media_id=r["media_id"], frame=r["frame"], t_media=r["t"], concepts=r["defect_concepts"], road_visible=r["road_visible"], notes=r.get("notes"), path=r["path"])
             run.emit("progress", stage="triage", done=done, total=len(picked))
 
     triage_ok = len(errors) < len(batches)
