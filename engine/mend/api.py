@@ -358,12 +358,21 @@ async def put_rates(run_id: str, payload: dict, pdf: int = 1) -> dict:
 
     run = _run(run_id)
     run.write("unit_rates", payload)
-    out = await asyncio.to_thread(build_documents, run, pdf=bool(pdf))
+    return await asyncio.to_thread(_rebuild_costs, run, bool(pdf))
+
+
+def _rebuild_costs(run: Run, pdf: bool) -> dict:
+    """Rebuild BOQ and documents after a rate change, update the summary and store it in R2."""
+    from . import r2sync
+    from .pipeline.report import build_documents
+
+    out = build_documents(run, pdf=pdf)
     summary = run.read("summary", {})
     summary["total_cost"] = out["boq"]["total"]
     summary["currency"] = out["boq"]["currency"]
     summary["symbol"] = out["boq"]["symbol"]
     run.write("summary", summary)
+    r2sync.sync_run(run)
     return out
 
 
@@ -371,12 +380,14 @@ async def put_rates(run_id: str, payload: dict, pdf: int = 1) -> dict:
 async def reset_rates(run_id: str) -> dict:
     from .pipeline.report import build_documents
 
+    from .pipeline.report import effective_rates
+
     run = _run(run_id)
     p = run.path("unit_rates")
     if p.exists():
         p.unlink()
-    out = await asyncio.to_thread(build_documents, run, pdf=True)
-    return out
+    run.write("unit_rates", effective_rates(run))  # write the defaults so the stored copy in R2 is replaced too
+    return await asyncio.to_thread(_rebuild_costs, run, True)
 
 
 @app.get("/api/runs/{run_id}/export/geojson")
