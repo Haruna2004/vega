@@ -18,7 +18,7 @@ It is live at https://mend.harunafaruk.com. The engine runs on Google Cloud Run 
 
 **Public GitHub repo:** https://github.com/Haruna2004/vega
 
-**Demo video:** https://www.youtube.com/watch?v=Khcg06RGetc
+**Demo video:** https://youtu.be/hTMNhOyJMkg
 
 **Use of Meta products**
 

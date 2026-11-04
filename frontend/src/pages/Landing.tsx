@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Logo } from "../components/ui";
 
-const DEMO = "https://www.youtube.com/watch?v=Khcg06RGetc";
+const DEMO = "https://youtu.be/hTMNhOyJMkg";
 const REPO = "https://github.com/Haruna2004/vega";
 const SURVEY = "/app/runs/20261104-160433-bolonge/review";
 
