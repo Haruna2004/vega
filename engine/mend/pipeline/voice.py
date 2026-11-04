@@ -50,7 +50,7 @@ def extract_intent(run: Run, transcript: str, site: dict | None, defects: list[d
     )
 
 
-def add_voice_note(run: Run, target_kind: str, target_id: str, audio_path: Path, *, rebuild_docs: bool = True) -> dict:
+def add_voice_note(run: Run, target_kind: str, target_id: str, audio_path: Path | None, *, rebuild_docs: bool = True, typed_text: str | None = None) -> dict:
     from .prioritize import prioritize
     from .report import build_documents
 
@@ -62,11 +62,16 @@ def add_voice_note(run: Run, target_kind: str, target_id: str, audio_path: Path,
         site_id = target_id
     site = next((s for s in sites if s["id"] == site_id), None)
     note_id = f"V{int(time.time() * 1000) % 10_000_000:07d}"
-    dst = run.dir / "voice" / f"{note_id}{audio_path.suffix or '.webm'}"
-    dst.parent.mkdir(exist_ok=True)
-    shutil.copy2(audio_path, dst)
     t0 = time.time()
-    tr = client().transcribe(dst, keywords=["pothole", "school", "crossing", "hospital", "bus stop"])
+    dst = None
+    if audio_path is not None:
+        dst = run.dir / "voice" / f"{note_id}{audio_path.suffix or '.webm'}"
+        dst.parent.mkdir(exist_ok=True)
+        shutil.copy2(audio_path, dst)
+    if typed_text:
+        tr = {"text": typed_text, "model": "typed by inspector", "transport": "keyboard"}
+    else:
+        tr = client().transcribe(dst, keywords=["pothole", "school", "crossing", "hospital", "bus stop"])
     transcript = (tr.get("text") or "").strip()
     intent = extract_intent(run, transcript, site, [defects[i] for i in (site or {}).get("defect_ids", []) if i in defects]) if transcript else {}
     note = {
@@ -74,7 +79,7 @@ def add_voice_note(run: Run, target_kind: str, target_id: str, audio_path: Path,
         "target_kind": target_kind,
         "target_id": target_id,
         "site_id": site_id,
-        "audio": run.rel(dst),
+        "audio": run.rel(dst) if dst else None,
         "transcript": transcript,
         "model": tr.get("model"),
         "transport": tr.get("transport"),

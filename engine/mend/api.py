@@ -40,7 +40,9 @@ def _run(run_id: str) -> Run:
 @app.get("/api/health")
 def health() -> dict:
     s = get_settings()
-    return {"ok": True, "offline": s.offline, "has_key": s.has_key, "models": {"spark": s.spark_model, "sam": s.sam_model, "asr": s.asr_model}, "time": time.time()}
+    from .simulate import provider_name
+
+    return {"ok": True, "provider": provider_name(), "offline": s.offline, "has_key": s.has_key, "models": {"spark": s.spark_model, "sam": s.sam_model, "asr": s.asr_model}, "time": time.time()}
 
 
 @app.get("/api/config")
@@ -226,23 +228,26 @@ def rerun(run_id: str, payload: dict) -> dict:
 
 
 @app.post("/api/runs/{run_id}/voice")
-async def voice(run_id: str, audio: UploadFile = File(...), target_kind: str = Form("site"), target_id: str = Form(...)) -> dict:
+async def voice(run_id: str, audio: UploadFile | None = File(None), target_kind: str = Form("site"), target_id: str = Form(...), text: str = Form("")) -> dict:
     from .meta_client import current_run_dir
     from .pipeline.voice import add_voice_note
 
     run = _run(run_id)
-    suffix = Path(audio.filename or "note.webm").suffix or ".webm"
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
-        shutil.copyfileobj(audio.file, tmp)
-        tmp_path = Path(tmp.name)
+    tmp_path = None
+    if audio is not None:
+        suffix = Path(audio.filename or "note.webm").suffix or ".webm"
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            shutil.copyfileobj(audio.file, tmp)
+            tmp_path = Path(tmp.name)
     token = current_run_dir.set(run.dir)
     try:
-        return await asyncio.to_thread(add_voice_note, run, target_kind, target_id, tmp_path)
+        return await asyncio.to_thread(add_voice_note, run, target_kind, target_id, tmp_path, typed_text=text or None)
     except Exception as exc:
         raise HTTPException(502, f"voice note failed: {exc}")
     finally:
         current_run_dir.reset(token)
-        tmp_path.unlink(missing_ok=True)
+        if tmp_path:
+            tmp_path.unlink(missing_ok=True)
 
 
 @app.post("/api/runs/{run_id}/ask")

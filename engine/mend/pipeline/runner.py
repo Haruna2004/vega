@@ -35,7 +35,10 @@ def run_pipeline(run: Run, inputs: list[Path] | None = None, *, from_stage: str 
     try:
         if from_stage == "ingest":
             run.reset_events()
-        run.update_meta(status="running", error=None)
+        from ..simulate import provider_name
+        from . import _override
+
+        run.update_meta(status="running", error=None, provider="test-fixture" if _override else provider_name())
         run.emit("run", status="running", from_stage=from_stage)
         t0 = time.time()
         started = False
