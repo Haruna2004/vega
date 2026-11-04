@@ -1,0 +1,61 @@
+[
+ {
+  "id": "s1",
+  "vo": 15.8,
+  "kind": "title",
+  "clip": "rec/raw.mp4",
+  "lead": 1.5
+ },
+ {
+  "id": "s2",
+  "vo": 19.06,
+  "clip": "rec/s2.mp4",
+  "clipStart": 18.38
+ },
+ {
+  "id": "s3",
+  "vo": 22.73,
+  "clip": "rec/s3.mp4",
+  "clipStart": 4.89,
+  "lower": "SAM 3.1 tracking"
+ },
+ {
+  "id": "s4",
+  "vo": 20.5,
+  "clip": "rec/s4.mp4",
+  "clipStart": 4.8,
+  "lower": "Muse Spark review"
+ },
+ {
+  "id": "s5",
+  "vo": 19.59,
+  "clip": "rec/s5.mp4",
+  "clipStart": -0.3,
+  "lower": "OpenStreetMap context"
+ },
+ {
+  "id": "s6",
+  "vo": 16.86,
+  "clip": "rec/s6.mp4",
+  "clipStart": -0.3,
+  "lower": "Muse Voice Transcribe"
+ },
+ {
+  "id": "s7",
+  "vo": 18.5,
+  "clip": "rec/s7.mp4",
+  "clipStart": 4.86
+ },
+ {
+  "id": "s8",
+  "vo": 14.5,
+  "clip": "rec/s8.mp4",
+  "clipStart": -0.3,
+  "lower": "Muse Spark answers"
+ },
+ {
+  "id": "s9",
+  "vo": 12.28,
+  "kind": "end"
+ }
+]

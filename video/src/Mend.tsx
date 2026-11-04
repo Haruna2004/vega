@@ -1,11 +1,13 @@
 import { AbsoluteFill, Audio, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig, Easing } from "remotion";
+import { loadFont } from "@remotion/google-fonts/Inter";
 import scenes from "./scenes.json";
+const { fontFamily: INTER } = loadFont("normal", { weights: ["400", "500", "600", "800"], subsets: ["latin"] });
 import lines from "../scripts/lines.json";
 
 export const FPS = 30;
 const GAP = 0.7; // seconds of breathing room after each voice clip
 const C = { mist: "#f6f8f7", ink: "#1b1c1f", carbon: "#0f0e12", amber: "#f0a800", hair: "rgba(15,14,18,0.14)" };
-const FONT = "Inter, 'Helvetica Neue', Arial, sans-serif";
+const FONT = `${INTER}, Arial, sans-serif`;
 
 type Zoom = { at: number; dur: number; x: number; y: number; s: number };
 type Scene = { id: string; vo: number; clip?: string; clipStart?: number; rate?: number; lower?: string; zooms?: Zoom[]; kind?: string; lead?: number };
