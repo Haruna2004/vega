@@ -1,21 +1,21 @@
 [
  {
   "id": "s1",
-  "vo": 12.54,
+  "vo": 13.58,
   "kind": "title",
   "clip": "rec/raw.mp4",
   "lead": 1.5
  },
  {
   "id": "s2",
-  "vo": 12.94,
+  "vo": 14.73,
   "clip": "rec/s2.mp4",
   "clipStart": 2.22,
   "min": 14
  },
  {
   "id": "s3",
-  "vo": 16.38,
+  "vo": 22.26,
   "clip": "rec/s3.mp4",
   "clipStart": 9.12,
   "lower": "SAM 3.1 tracking",
@@ -24,7 +24,7 @@
  },
  {
   "id": "s4",
-  "vo": 14.02,
+  "vo": 21.28,
   "clip": "rec/s4.mp4",
   "clipStart": 4.86,
   "lower": "Muse Spark review",
@@ -48,7 +48,7 @@
  },
  {
   "id": "s5",
-  "vo": 13.7,
+  "vo": 18.61,
   "clip": "rec/s5.mp4",
   "clipStart": 8.37,
   "lower": "Ranked by risk",
@@ -65,7 +65,7 @@
  },
  {
   "id": "s6",
-  "vo": 12.42,
+  "vo": 16.92,
   "clip": "rec/s6.mp4",
   "clipStart": 12.74,
   "lower": "Muse Voice Transcribe",
@@ -92,7 +92,7 @@
  },
  {
   "id": "s7",
-  "vo": 12.9,
+  "vo": 14.14,
   "clip": "rec/s7.mp4",
   "clipStart": 4.94,
   "still": "rec/pdf.png",
@@ -110,7 +110,7 @@
  },
  {
   "id": "s8",
-  "vo": 9.3,
+  "vo": 10.33,
   "clip": "rec/s8.mp4",
   "clipStart": 4.69,
   "lower": "Muse Spark answers",
@@ -127,7 +127,7 @@
  },
  {
   "id": "s9",
-  "vo": 6.62,
+  "vo": 8.07,
   "kind": "end"
  }
 ]

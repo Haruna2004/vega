@@ -76,7 +76,15 @@ export default {
     }
 
     // public downloads (e.g. the rendered demo video): R2 prefix downloads/
-    if (req.method === "GET" && p.startsWith("/download/")) return serveObject(env, req, `downloads/${decodeURIComponent(p.slice("/download/".length))}`);
+    if ((req.method === "GET" || req.method === "HEAD") && p.startsWith("/download/")) {
+      const name = decodeURIComponent(p.slice("/download/".length));
+      const res = await serveObject(env, req, `downloads/${name}`);
+      if (!url.searchParams.has("dl") || !res.ok) return res;
+      // ?dl=1: ask the browser to save the file instead of playing it (iOS Chrome / Safari "Save to Files")
+      const h = new Headers(res.headers);
+      h.set("content-disposition", `attachment; filename="${name.replace(/"/g, "")}"`);
+      return new Response(res.body, { status: res.status, headers: h });
+    }
 
     if (!p.startsWith("/api/")) return env.ASSETS.fetch(req);
 

@@ -1,6 +1,6 @@
 {
  "s3": {
-  "rate": 2.6,
+  "rate": 2.4,
   "clipStartMark": "replay",
   "min": 21
  },
