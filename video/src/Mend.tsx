@@ -1,7 +1,11 @@
-import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig, Easing } from "remotion";
-import { loadFont } from "@remotion/google-fonts/Inter";
+import { AbsoluteFill, Audio, Img, continueRender, delayRender, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig, Easing } from "remotion";
 import scenes from "./scenes.json";
-const { fontFamily: INTER } = loadFont("normal", { weights: ["400", "500", "600", "800"], subsets: ["latin"] });
+const INTER = "InterLocal";
+if (typeof document !== "undefined") {
+  const h = delayRender("font");
+  const ff = new FontFace(INTER, `url(${staticFile("fonts/inter.woff2")}) format("woff2")`, { weight: "100 900" });
+  ff.load().then((f) => { (document.fonts as any).add(f); continueRender(h); }).catch(() => continueRender(h));
+}
 import lines from "../scripts/lines.json";
 
 export const FPS = 30;
