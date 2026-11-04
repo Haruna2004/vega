@@ -62,7 +62,7 @@ const S = {
     await h.move(800, 500, 1200); await h.wait(2500);
     await h.move(1200, 600, 1200); await h.wait(2000);
     const first = h.page.locator('text=/^#?1$/').first();
-    const site = h.page.locator('button:has-text("S01")').first();
+    const site = h.page.locator('button:visible:has-text("S01")').first();
     await h.click((await site.count()) ? site : first, 1200);
     h.mark('open');
     await h.wait(9000);
@@ -73,11 +73,11 @@ const S = {
     const h = await open('s6', { audio: path.join(__dirname, '..', 'public', 'rec', 'note.wav') });
     await go(h, `${R}/map`);
     await h.wait(5000);
-    const site = h.page.locator(`button:has-text("${process.env.SITE || 'S01'}")`).first();
+    const site = h.page.locator(`button:visible:has-text("${process.env.SITE || "S01"}")`).first();
     await h.click(site, 900);
     await h.wait(1500);
     h.mark('start');
-    const btn = h.page.locator('button:has-text("Hold to record")').first();
+    const btn = h.page.locator('button:visible:has-text("Hold to record")').first();
     await h.to(btn, 1000);
     await h.wait(400);
     await h.page.mouse.down();
@@ -85,7 +85,7 @@ const S = {
     await h.wait(9000);
     await h.page.mouse.up();
     h.mark('sent');
-    await h.wait(14000);
+    await h.wait(52000);
     await h.done();
   },
   // work orders: edit a rate, download pdf
@@ -101,7 +101,7 @@ const S = {
     await h.type(process.env.RATE || '95', 180);
     h.mark('rate');
     await h.wait(3500);
-    const dl = h.page.locator('button:has-text("Download PDF")').first();
+    const dl = h.page.locator('button:visible:has-text("Download PDF")').first();
     await h.to(dl, 1000);
     h.mark('pdf');
     await h.wait(1000);
